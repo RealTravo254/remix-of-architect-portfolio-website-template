@@ -199,7 +199,7 @@ const CurrencyConverter = () => {
 
       {lastUpdated && (
         <p className="text-white/40 text-[10px] text-center">
-          Rates from Open Exchange • Updated {lastUpdated}
+          {t('footer.ratesFrom')} {lastUpdated}
         </p>
       )}
     </div>
