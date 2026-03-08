@@ -22,6 +22,7 @@ export const MobileBottomBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [bookingsOpen, setBookingsOpen] = useState(false);
   const [savedOpen, setSavedOpen] = useState(false);
 
