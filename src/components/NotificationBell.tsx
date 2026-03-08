@@ -77,12 +77,12 @@ export const NotificationBell = () => {
       case 'payment_verification': return '/account';
       case 'withdrawal_success':
       case 'withdrawal_failed':
-        return '/my-referrals';
+        return '/payment';
       case 'new_booking':
         if (data?.item_id && data?.booking_type) return `/host-bookings/${data.booking_type}/${data.item_id}`;
         return '/host-bookings';
       case 'payment_confirmed': return '/bookings';
-      case 'new_referral': return '/my-referrals';
+      case 'new_referral': return '/payment';
       case 'item_status':
       case 'item_hidden':
       case 'item_unhidden':
