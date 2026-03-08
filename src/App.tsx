@@ -94,19 +94,6 @@ const SuspenseFallback = () => {
   return <TealLoader />;
 };
 
-/** Forces light theme when not running as PWA */
-const PwaThemeEnforcer = () => {
-  const isPwa = useIsPwa();
-  const { setTheme } = useTheme();
-
-  useEffect(() => {
-    if (!isPwa) {
-      setTheme("light");
-    }
-  }, [isPwa, setTheme]);
-
-  return null;
-};
 
 const App = () => {
   useEffect(() => {
