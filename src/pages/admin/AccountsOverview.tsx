@@ -247,7 +247,7 @@ const AccountsOverview = () => {
     return (
       <div className="min-h-screen bg-[#F8F9FA]">
         <Header />
-        <main className="container mx-auto px-4 py-8 max-w-6xl space-y-6">
+        <main className="container mx-auto px-4 py-8 space-y-6">
           <Skeleton className="h-12 w-60 rounded-2xl" />
           <Skeleton className="h-64 w-full rounded-3xl" />
         </main>
