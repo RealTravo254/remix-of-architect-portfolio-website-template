@@ -10,6 +10,7 @@ interface CurrencyContextType {
   rate: number; // KES per 1 USD
   convertPrice: (kesAmount: number) => number;
   formatPrice: (kesAmount: number) => string;
+  usdHint: (kesAmount: number) => string;
   loading: boolean;
 }
 
