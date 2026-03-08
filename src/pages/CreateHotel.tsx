@@ -267,6 +267,7 @@ const FacilityBuilder = ({
                   <Input type="number" value={item.price} onChange={(e) => update(item.id, { price: e.target.value })}
                     placeholder="0"
                     className={cn("rounded-xl h-10 font-bold text-sm", showErrors && !item.price.trim() && "border-red-500 bg-red-50")} />
+                  {item.price && parseFloat(item.price) > 0 && <p className="text-[9px] text-blue-500 font-bold mt-0.5">{usdHint(parseFloat(item.price))}</p>}
                 </div>
               </div>
 
