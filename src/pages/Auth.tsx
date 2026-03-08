@@ -1,28 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Header } from "@/components/Header";
-import { MobileBottomBar } from "@/components/MobileBottomBar";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, User, UserPlus } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { SignupForm } from "@/components/auth/SignupForm";
 import { SEOHead } from "@/components/SEOHead";
-
-const COLORS = {
-  TEAL: "#008080",
-  CORAL: "#FF7F50",
-  CORAL_LIGHT: "#FF9E7A",
-  KHAKI: "#F0E68C",
-  KHAKI_DARK: "#857F3E",
-  RED: "#FF0000",
-  SOFT_GRAY: "#F8F9FA"
-};
+import { ArrowLeft, MapPin, Shield, Star } from "lucide-react";
 
 const Auth = () => {
-  const [activeTab, setActiveTab] = useState("login");
+  const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
@@ -33,94 +18,138 @@ const Auth = () => {
   }, [user, loading, navigate]);
 
   if (loading) {
-    return <div className="min-h-screen bg-[#F8F9FA] animate-pulse" />;
+    return <div className="min-h-screen bg-background animate-pulse" />;
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] pb-24">
-      <SEOHead title="Sign In or Sign Up | Realtravo" description="Create an account or sign in to Realtravo to book trips, save favorites, and manage your travel experiences." />
-      {/* Always show header on auth page */}
-      <Header __fromLayout />
-      
-      <main className="container px-4 pt-20 max-w-md mx-auto relative z-10">
-        {/* Back Button - always goes home */}
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/")}
-          className="mb-8 hover:bg-transparent p-0 group"
-        >
-          <div className="bg-white p-2 rounded-xl shadow-sm border border-slate-100 group-hover:bg-[#008080] transition-colors mr-3">
-            <ArrowLeft className="h-4 w-4 text-[#008080] group-hover:text-white" />
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      <SEOHead
+        title="Sign In or Sign Up | Realtravo"
+        description="Create an account or sign in to Realtravo to book trips, save favorites, and manage your travel experiences."
+      />
+
+      {/* Left Panel - Branding */}
+      <div className="hidden lg:flex lg:w-[48%] relative overflow-hidden bg-primary">
+        {/* Decorative circles */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-primary-foreground/5" />
+        <div className="absolute -bottom-32 -right-32 w-[500px] h-[500px] rounded-full bg-primary-foreground/5" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-primary-foreground/[0.03]" />
+
+        <div className="relative z-10 flex flex-col justify-between p-12 w-full">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <img src="/fulllogo.png" alt="Realtravo" className="h-10 brightness-0 invert" />
           </div>
-          <span className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: COLORS.TEAL }}>
-            Go Back
-          </span>
-        </Button>
 
-        <div className="mb-8 text-center">
-            <h1 className="text-4xl font-black uppercase tracking-tighter leading-none mb-2" style={{ color: COLORS.TEAL }}>
-                Welcome
-            </h1>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                Join the curated community
-            </p>
+          {/* Main copy */}
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-5xl font-extrabold text-primary-foreground leading-[1.1] tracking-tight">
+                Discover.<br />
+                Book.<br />
+                <span className="text-primary-foreground/70">Experience.</span>
+              </h1>
+              <p className="mt-6 text-primary-foreground/60 text-lg max-w-sm leading-relaxed">
+                Your gateway to curated adventures, hotels, and unforgettable trips across Africa.
+              </p>
+            </div>
+
+            {/* Feature pills */}
+            <div className="flex flex-col gap-4">
+              {[
+                { icon: MapPin, text: "1,000+ curated destinations" },
+                { icon: Shield, text: "Verified hosts & secure payments" },
+                { icon: Star, text: "Trusted by 50K+ travelers" },
+              ].map(({ icon: Icon, text }) => (
+                <div key={text} className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary-foreground/10 flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-5 h-5 text-primary-foreground/80" />
+                  </div>
+                  <span className="text-primary-foreground/70 text-sm font-medium">{text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Footer */}
+          <p className="text-primary-foreground/30 text-xs">
+            © {new Date().getFullYear()} Realtravo. All rights reserved.
+          </p>
         </div>
-        
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 h-auto p-1 bg-slate-100/50 rounded-[20px] mb-6">
-            <TabsTrigger 
-                value="login" 
-                className="rounded-[16px] py-3 text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:shadow-sm"
-                style={{ color: activeTab === 'login' ? COLORS.TEAL : '#94a3b8' }}
-            >
-              <User className="h-3.5 w-3.5 mr-2" />
-              Login
-            </TabsTrigger>
-            <TabsTrigger 
-                value="signup" 
-                className="rounded-[16px] py-3 text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:shadow-sm"
-                style={{ color: activeTab === 'signup' ? COLORS.TEAL : '#94a3b8' }}
-            >
-              <UserPlus className="h-3.5 w-3.5 mr-2" />
-              Join
-            </TabsTrigger>
-          </TabsList>
+      </div>
 
-          <TabsContent value="login" className="mt-0">
-            <Card className="rounded-[28px] border-none shadow-2xl overflow-hidden bg-white">
-              <CardHeader className="pt-8 pb-4 text-center">
-                <CardTitle className="text-xl font-black uppercase tracking-tight" style={{ color: COLORS.TEAL }}>
-                    Welcome Back
-                </CardTitle>
-                <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                    Access your curated experiences
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pb-8">
+      {/* Right Panel - Auth Forms */}
+      <div className="flex-1 flex flex-col min-h-screen bg-background">
+        {/* Mobile top bar */}
+        <div className="flex items-center justify-between p-4 lg:p-8 lg:pb-0">
+          <button
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-sm font-medium">Back</span>
+          </button>
+          <img src="/fulllogo.png" alt="Realtravo" className="h-7 lg:hidden" />
+          <div className="w-16" />
+        </div>
+
+        {/* Form area */}
+        <div className="flex-1 flex items-center justify-center px-4 py-8 lg:px-12">
+          <div className="w-full max-w-[420px] space-y-8">
+            {/* Header */}
+            <div>
+              <h2 className="text-2xl font-bold text-foreground tracking-tight">
+                {activeTab === "login" ? "Welcome back" : "Create your account"}
+              </h2>
+              <p className="mt-1 text-muted-foreground text-sm">
+                {activeTab === "login"
+                  ? "Sign in to continue your journey"
+                  : "Join Realtravo and start exploring"}
+              </p>
+            </div>
+
+            {/* Tab switcher */}
+            <div className="flex bg-muted rounded-xl p-1 gap-1">
+              <button
+                onClick={() => setActiveTab("login")}
+                className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all ${
+                  activeTab === "login"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => setActiveTab("signup")}
+                className={`flex-1 py-2.5 text-sm font-semibold rounded-lg transition-all ${
+                  activeTab === "signup"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Sign Up
+              </button>
+            </div>
+
+            {/* Forms */}
+            <div>
+              {activeTab === "login" ? (
                 <LoginForm onSwitchToSignup={() => setActiveTab("signup")} />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="signup" className="mt-0">
-            <Card className="rounded-[28px] border-none shadow-2xl overflow-hidden bg-white">
-              <CardHeader className="pt-8 pb-4 text-center">
-                <CardTitle className="text-xl font-black uppercase tracking-tight" style={{ color: COLORS.TEAL }}>
-                    Create Account
-                </CardTitle>
-                <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                    Start your journey with us
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pb-8">
+              ) : (
                 <SignupForm />
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </main>
+              )}
+            </div>
+          </div>
+        </div>
 
-      <MobileBottomBar />
+        {/* Mobile footer */}
+        <div className="p-4 text-center lg:hidden">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} Realtravo. All rights reserved.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
