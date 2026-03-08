@@ -332,7 +332,7 @@ export const ReviewStep = ({ type, data, creatorName, creatorEmail, creatorPhone
                       ? "bg-emerald-500/10 text-emerald-600"
                       : "bg-muted text-muted-foreground"
                   }`}>
-                    {activity.is_free || activity.price === 0 ? "Free" : `KES ${activity.price.toLocaleString()}/person`}
+                    {activity.is_free || activity.price === 0 ? "Free" : `${currencyFormat(activity.price)}/person`}
                   </span>
                 </div>
                 {activity.images && activity.images.length > 0 && (
