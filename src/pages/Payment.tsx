@@ -5,12 +5,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { 
-  ArrowLeft, DollarSign, Wallet, TrendingUp, Award, Percent, Receipt
+  ArrowLeft, DollarSign, Wallet, TrendingUp, Award, Percent, 
+  Copy, Share2, Link2, Users, ArrowUpRight, CheckCircle, Info
 } from "lucide-react";
 import { useHostVerificationStatus } from "@/hooks/useHostVerificationStatus";
 import { WithdrawalDialog } from "@/components/referral/WithdrawalDialog";
 import { WithdrawalDetailsSection } from "@/components/payment/WithdrawalDetailsSection";
-import { Badge } from "@/components/ui/badge";
+import { SEOHead } from "@/components/SEOHead";
+import { generateReferralLink } from "@/lib/referralUtils";
 
 export default function Payment() {
   const navigate = useNavigate();
@@ -19,6 +21,8 @@ export default function Payment() {
   const { isVerifiedHost, status: verificationStatus, loading: verificationLoading } = useHostVerificationStatus();
   const [loading, setLoading] = useState(true);
   const [showWithdrawDialog, setShowWithdrawDialog] = useState(false);
+  const [referralLink, setReferralLink] = useState("");
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const [stats, setStats] = useState({
     totalReferred: 0, totalBookings: 0, totalCommission: 0,
@@ -26,14 +30,27 @@ export default function Payment() {
     serviceFeeDeducted: 0, referralDeducted: 0, withdrawableBalance: 0, avgServiceFeeRate: 0,
   });
 
+  // Commission history for timeline
+  const [recentCommissions, setRecentCommissions] = useState<any[]>([]);
+
   useEffect(() => {
     if (!user) { navigate("/auth"); return; }
     if (!verificationLoading) fetchData();
   }, [user, navigate, isVerifiedHost, verificationLoading]);
 
+  // Generate the user's referral base link
+  useEffect(() => {
+    if (isVerifiedHost && user) {
+      // Generate a generic referral link (homepage)
+      generateReferralLink("", "trip", "").then(link => {
+        // The link will be the homepage with ?ref= param for verified hosts
+        setReferralLink(link);
+      });
+    }
+  }, [isVerifiedHost, user]);
+
   const fetchData = async () => {
     try {
-      // Fetch host earnings from completed bookings + settings
       const [bookingsRes, settingsRes] = await Promise.all([
         supabase.from("bookings")
           .select("total_amount, item_id, booking_type, payment_status, service_fee_amount, referral_tracking_id")
@@ -44,7 +61,6 @@ export default function Payment() {
       const bookings = bookingsRes.data || [];
       const settings = settingsRes.data;
       
-      // Batch fetch all item owners instead of N+1 queries
       const itemIds = [...new Set(bookings.map(b => b.item_id))];
       const [tripsRes, hotelsRes, adventuresRes] = await Promise.all([
         supabase.from("trips").select("id, created_by").in("id", itemIds),
@@ -92,18 +108,23 @@ export default function Payment() {
       if (isVerifiedHost) {
         const [refRes, comRes] = await Promise.all([
           supabase.from("referral_tracking").select("referred_user_id").eq("referrer_id", user!.id),
-          supabase.from("referral_commissions").select("commission_type,commission_amount,booking_amount,status,withdrawn_at").eq("referrer_id", user!.id),
+          supabase.from("referral_commissions")
+            .select("commission_type,commission_amount,booking_amount,status,withdrawn_at,created_at,booking_id")
+            .eq("referrer_id", user!.id)
+            .order("created_at", { ascending: false })
+            .limit(10),
         ]);
         const refs = refRes.data || [], coms = comRes.data || [];
         const unique = new Set(refs.map(r => r.referred_user_id).filter(Boolean));
         const bookE = coms.filter(c => c.commission_type === 'booking').reduce((s, c) => s + Number(c.commission_amount), 0);
         const withdrawableCommissions = coms.filter(c => c.status === 'paid' && !c.withdrawn_at).reduce((s, c) => s + Number(c.commission_amount), 0);
-        const rate = settings?.platform_referral_commission_rate || 5.0;
+        
+        setRecentCommissions(coms.slice(0, 5));
         setStats({
           totalReferred: unique.size, totalBookings: coms.length, totalCommission: bookE,
           hostEarnings: grossHostEarnings, bookingEarnings: bookE, grossBalance: grossHostEarnings,
           serviceFeeDeducted: totalServiceFee, referralDeducted: totalReferralDeducted,
-          withdrawableBalance: netHostEarnings + withdrawableCommissions, avgServiceFeeRate: rate,
+          withdrawableBalance: netHostEarnings + withdrawableCommissions, avgServiceFeeRate: settings?.platform_referral_commission_rate || 5.0,
         });
       } else {
         setStats(prev => ({ ...prev, hostEarnings: grossHostEarnings, withdrawableBalance: netHostEarnings, grossBalance: grossHostEarnings, serviceFeeDeducted: totalServiceFee, referralDeducted: totalReferralDeducted }));
@@ -113,6 +134,25 @@ export default function Payment() {
   };
 
   const handleWithdrawalSuccess = () => { setLoading(true); window.location.reload(); };
+
+  const handleCopyReferralLink = async () => {
+    if (!referralLink) return;
+    await navigator.clipboard.writeText(referralLink);
+    setLinkCopied(true);
+    toast({ title: "Referral link copied!" });
+    setTimeout(() => setLinkCopied(false), 2000);
+  };
+
+  const handleShareReferralLink = async () => {
+    if (!referralLink) return;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "Join Realtravo", text: "Check out Realtravo for amazing travel experiences!", url: referralLink });
+      } catch (_) {}
+    } else {
+      handleCopyReferralLink();
+    }
+  };
 
   if (loading || verificationLoading) return (
     <div className="min-h-screen flex items-center justify-center bg-background">
@@ -124,6 +164,7 @@ export default function Payment() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Payment Dashboard | Realtravo" description="View your earnings, referral commissions, and manage withdrawals on Realtravo." />
       <main className="container px-3 py-4 max-w-3xl mx-auto">
         <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="mb-3 rounded-lg text-[9px] font-bold uppercase tracking-widest px-3 h-7">
           <ArrowLeft className="mr-1 h-3 w-3" /> Home
@@ -156,6 +197,57 @@ export default function Payment() {
         {/* Withdrawal Details */}
         <WithdrawalDetailsSection userId={user?.id || ""} />
 
+        {/* Referral Link Card - Only for verified hosts */}
+        {isVerifiedHost && referralLink && (
+          <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl p-4 border border-primary/20 mb-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Link2 className="h-4 w-4 text-primary" />
+              <h3 className="text-xs font-black uppercase tracking-widest text-primary">Your Referral Link</h3>
+            </div>
+            <p className="text-[10px] text-muted-foreground mb-3">
+              Share this link to earn commission on every booking made through it.
+            </p>
+            <div className="flex items-center gap-2 bg-background rounded-lg p-2 border border-border">
+              <p className="flex-1 text-xs font-mono text-foreground truncate">{referralLink}</p>
+              <Button size="sm" variant="ghost" onClick={handleCopyReferralLink} className="rounded-lg h-8 w-8 p-0 shrink-0">
+                {linkCopied ? <CheckCircle className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={handleShareReferralLink} className="rounded-lg h-8 w-8 p-0 shrink-0">
+                <Share2 className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex items-start gap-1.5 mt-3">
+              <Info className="h-3 w-3 text-muted-foreground mt-0.5 shrink-0" />
+              <p className="text-[9px] text-muted-foreground">
+                You can also share referral links from any listing's detail page for item-specific tracking.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Not verified host prompt */}
+        {!isVerifiedHost && !verificationLoading && (
+          <div className="bg-amber-50 dark:bg-amber-950/20 rounded-xl p-4 border border-amber-200 dark:border-amber-800 mb-4">
+            <div className="flex items-start gap-3">
+              <Award className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+              <div>
+                <h3 className="text-xs font-black uppercase tracking-tight text-amber-800 dark:text-amber-300">Unlock Referral Earnings</h3>
+                <p className="text-[10px] text-amber-700 dark:text-amber-400 mt-1">
+                  {verificationStatus === 'pending' 
+                    ? 'Your host verification is pending. Referral program will be unlocked once approved.'
+                    : 'Become a verified host to earn commissions by sharing listings with your referral link.'}
+                </p>
+                {verificationStatus !== 'pending' && (
+                  <Button size="sm" variant="outline" onClick={() => navigate("/host-verification")} 
+                    className="mt-2 rounded-lg text-[9px] font-bold uppercase h-7 border-amber-300">
+                    <ArrowUpRight className="h-3 w-3 mr-1" /> Get Verified
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Host Earnings Breakdown */}
         <div className="mb-3">
           <h2 className="text-sm font-black uppercase tracking-tight text-foreground">Earnings Breakdown</h2>
@@ -178,11 +270,44 @@ export default function Payment() {
               <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Track your performance</p>
             </div>
             <div className="grid grid-cols-2 gap-2 mb-4">
-              <StatCard icon={<TrendingUp className="h-4 w-4" />} label="From Bookings" value={`KES ${stats.bookingEarnings.toLocaleString()}`} />
-              <StatCard icon={<Award className="h-4 w-4" />} label="Referrals" value={stats.totalReferred} />
-              <StatCard icon={<DollarSign className="h-4 w-4" />} label="Conversions" value={stats.totalBookings} />
+              <StatCard icon={<Users className="h-4 w-4" />} label="People Referred" value={stats.totalReferred} />
+              <StatCard icon={<TrendingUp className="h-4 w-4" />} label="Conversions" value={stats.totalBookings} />
+              <StatCard icon={<DollarSign className="h-4 w-4" />} label="From Bookings" value={`KES ${stats.bookingEarnings.toLocaleString()}`} />
               <StatCard icon={<Wallet className="h-4 w-4" />} label="Total Earned" value={`KES ${stats.totalCommission.toLocaleString()}`} />
             </div>
+
+            {/* Recent Commission Activity */}
+            {recentCommissions.length > 0 && (
+              <>
+                <div className="mb-3">
+                  <h2 className="text-sm font-black uppercase tracking-tight text-foreground">Recent Activity</h2>
+                  <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Latest referral commissions</p>
+                </div>
+                <div className="bg-card rounded-xl border border-border overflow-hidden mb-4">
+                  {recentCommissions.map((c, i) => (
+                    <div key={i} className={`flex items-center justify-between p-3 ${i !== recentCommissions.length - 1 ? 'border-b border-border' : ''}`}>
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-8 w-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 flex items-center justify-center">
+                          <DollarSign className="h-3.5 w-3.5 text-emerald-600" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold text-foreground">Booking Commission</p>
+                          <p className="text-[9px] text-muted-foreground">
+                            {c.created_at ? new Date(c.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : ''}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs font-black text-emerald-600">+KES {Number(c.commission_amount).toLocaleString()}</p>
+                        <p className="text-[8px] font-bold text-muted-foreground uppercase">
+                          {c.withdrawn_at ? 'Withdrawn' : c.status === 'paid' ? 'Available' : c.status}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
 
             {/* Per-item referral rates */}
             <div className="mb-3">
