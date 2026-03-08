@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, useEffect } from "react";
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider, useTheme } from "next-themes";
+import { useIsPwa } from "@/hooks/useIsPwa";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -95,6 +96,20 @@ const SuspenseFallback = () => {
   return <TealLoader />;
 };
 
+/** Forces light theme when not running as PWA */
+const PwaThemeEnforcer = () => {
+  const isPwa = useIsPwa();
+  const { setTheme } = useTheme();
+
+  useEffect(() => {
+    if (!isPwa) {
+      setTheme("light");
+    }
+  }, [isPwa, setTheme]);
+
+  return null;
+};
+
 const App = () => {
   useEffect(() => {
     const handler = (e: PromiseRejectionEvent) => {
@@ -106,7 +121,8 @@ const App = () => {
   }, []);
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+    <PwaThemeEnforcer />
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
