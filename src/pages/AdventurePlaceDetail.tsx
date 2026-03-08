@@ -25,6 +25,7 @@ import { GeneralFacilitiesDisplay } from "@/components/detail/GeneralFacilitiesD
 import { DetailMapSection } from "@/components/detail/DetailMapSection";
 import { TealLoader } from "@/components/ui/teal-loader";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { Footer } from "@/components/Footer";
 
 const AdventurePlaceDetail = () => {
   const { slug } = useParams();
@@ -475,6 +476,7 @@ const AdventurePlaceDetail = () => {
 
         <SimilarItems currentItemId={place.id} itemType="adventure" country={place.country} />
       </main>
+      <Footer />
     </div>
   );
 };

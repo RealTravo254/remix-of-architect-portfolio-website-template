@@ -27,6 +27,7 @@ import { DetailMapSection } from "@/components/detail/DetailMapSection";
 import { TealLoader } from "@/components/ui/teal-loader";
 import { ExternalBookingButton } from "@/components/detail/ExternalBookingDialog";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { Footer } from "@/components/Footer";
 
 const HotelDetail = () => {
   const { slug } = useParams();
@@ -684,7 +685,7 @@ z
           <SimilarItems currentItemId={hotel.id} itemType="hotel" country={hotel.country} />
         </div>
       </main>
-
+      <Footer />
       {/* External booking now opens in new tab with loading spinner */}
     </div>
   );
