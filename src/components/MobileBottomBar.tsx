@@ -48,9 +48,9 @@ export const MobileBottomBar = () => {
   };
 
   const navItems = [
-    { icon: Home, label: "Home", path: "/" },
-    { icon: Ticket, label: "Bookings", path: "/bookings" },
-    { icon: Heart, label: "Saved", path: "/saved" },
+    { icon: Home, label: t('nav.home'), path: "/" },
+    { icon: Ticket, label: t('nav.bookings'), path: "/bookings" },
+    { icon: Heart, label: t('nav.saved'), path: "/saved" },
   ];
 
   return (
