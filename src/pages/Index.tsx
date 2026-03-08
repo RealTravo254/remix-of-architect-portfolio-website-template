@@ -485,7 +485,7 @@ const Index = () => {
         {isSearchFocused && (
           <div className="container mx-auto px-4 md:px-6 mt-6 pb-20 md:pb-8">
             <h2 className="text-lg md:text-xl font-bold mb-5 text-foreground">
-              {searchQuery ? 'Search Results' : 'All Listings'}
+              {searchQuery ? t('sections.searchResults') : t('sections.allListings')}
             </h2>
             {loading ? (
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
