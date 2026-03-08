@@ -6,6 +6,7 @@ import {
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "react-i18next";
 
 interface NavigationDrawerProps {
   onClose: () => void;
@@ -17,6 +18,7 @@ const Separator = () => (
 
 export const NavigationDrawer = ({ onClose }: NavigationDrawerProps) => {
   const { user, signOut } = useAuth();
+  const { t } = useTranslation();
   const [userName, setUserName] = useState("");
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
@@ -99,10 +101,10 @@ export const NavigationDrawer = ({ onClose }: NavigationDrawerProps) => {
                   </div>
                   <div>
                     <p className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate max-w-[140px]">
-                      {userName || "Traveler"}
+                      {userName || t('drawer.traveler')}
                     </p>
                     <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">
-                      Account
+                      {t('nav.account')}
                     </span>
                   </div>
                 </div>
@@ -121,38 +123,38 @@ export const NavigationDrawer = ({ onClose }: NavigationDrawerProps) => {
               className="flex items-center justify-center w-full py-3 rounded-xl border-2 border-[#008080] text-[#008080] hover:bg-[#008080] hover:text-white transition-all"
             >
               <LogIn className="h-4 w-4 mr-2" />
-              <span className="text-[10px] font-black uppercase tracking-widest">Login / Register</span>
+              <span className="text-[10px] font-black uppercase tracking-widest">{t('nav.loginRegister')}</span>
             </Link>
           )}
         </div>
 
         <ul className="space-y-1">
-          <p className="px-4 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Main Menu</p>
-          <NavItem icon={Home} label="Home" path="/" />
-          <NavItem icon={Ticket} label="My Bookings" path="/bookings" isProtected />
-          <NavItem icon={Heart} label="Wishlist" path="/saved" isProtected />
+          <p className="px-4 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">{t('drawer.mainMenu')}</p>
+          <NavItem icon={Home} label={t('nav.home')} path="/" />
+          <NavItem icon={Ticket} label={t('nav.myBookings')} path="/bookings" isProtected />
+          <NavItem icon={Heart} label={t('nav.wishlist')} path="/saved" isProtected />
           
           <div className="h-4" />
-          <p className="px-4 text-[9px] font-black text-[#008080] uppercase tracking-[0.2em] mb-2">Explore Categories</p>
-          <NavItem icon={Trophy} label="Events & Sports" path="/category/events" />
-          <NavItem icon={Map} label="Trips & Tours" path="/category/trips" />
-          <NavItem icon={Mountain} label="Adventure Places" path="/category/campsite" />
-          <NavItem icon={Building2} label="Accommodation Only" path="/category/accommodation" />
-          <NavItem icon={Bed} label="Hotel" path="/category/hotels" />
+          <p className="px-4 text-[9px] font-black text-[#008080] uppercase tracking-[0.2em] mb-2">{t('drawer.exploreCategories')}</p>
+          <NavItem icon={Trophy} label={t('drawer.eventsAndSports')} path="/category/events" />
+          <NavItem icon={Map} label={t('drawer.tripsAndTours')} path="/category/trips" />
+          <NavItem icon={Mountain} label={t('drawer.adventurePlaces')} path="/category/campsite" />
+          <NavItem icon={Building2} label={t('drawer.accommodationOnly')} path="/category/accommodation" />
+          <NavItem icon={Bed} label={t('drawer.hotel')} path="/category/hotels" />
 
           <div className="h-4" />
-          <p className="px-4 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Support & Legal</p>
-          <NavItem icon={Phone} label="Contact" path="/contact" />
-          <NavItem icon={Info} label="About" path="/about" />
-          <NavItem icon={FileText} label="Terms" path="/terms-of-service" />
-          <NavItem icon={Shield} label="Privacy" path="/privacy-policy" />
+          <p className="px-4 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">{t('drawer.supportLegal')}</p>
+          <NavItem icon={Phone} label={t('drawer.contact')} path="/contact" />
+          <NavItem icon={Info} label={t('drawer.about')} path="/about" />
+          <NavItem icon={FileText} label={t('drawer.terms')} path="/terms-of-service" />
+          <NavItem icon={Shield} label={t('drawer.privacy')} path="/privacy-policy" />
         </ul>
       </nav>
       
       {/* Footer & Transparency Note */}
       <div className="p-6 border-t border-slate-50 dark:border-gray-900 bg-slate-50/30 dark:bg-gray-900/30">
         <p className="text-[10px] leading-relaxed text-slate-400 dark:text-slate-500 mb-4 text-center">
-          <span className="font-black text-slate-500 dark:text-slate-400">TRANSPARENCY:</span> RealTravo may earn a commission for some bookings. This is paid by the property and <span className="text-[#008080] font-bold">is never added to your final cost</span>.
+          <span className="font-black text-slate-500 dark:text-slate-400">{t('drawer.transparency')}</span> {t('drawer.transparencyText')} <span className="text-[#008080] font-bold">{t('drawer.transparencyHighlight')}</span>.
         </p>
         <div className="text-center">
           <span className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.3em]">

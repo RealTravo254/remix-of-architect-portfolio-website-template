@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback, memo, lazy, Suspense } from "react";
+import { useTranslation } from "react-i18next";
 import { SEOHead } from "@/components/SEOHead";
 import { useNavigate, Link } from "react-router-dom";
 import { SearchBarWithSuggestions } from "@/components/SearchBarWithSuggestions";
@@ -52,7 +53,7 @@ const ScrollSection = memo(({ title, viewAllPath, accentClass, children, scrollR
           to={viewAllPath}
           className="text-xs md:text-sm font-semibold text-muted-foreground hover:text-primary transition-colors shrink-0"
         >
-          View all →
+          {title ? "→" : "→"}
         </Link>
       </div>
       <div className="relative group">
@@ -105,6 +106,7 @@ const CATEGORIES = [
 // ─── Main component ──────────────────────────────────────────────────────────
 const Index = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [listings, setListings] = useState<any[]>([]);
   const { savedItems, handleSave } = useSavedItems();
@@ -428,10 +430,10 @@ const Index = () => {
           <div className="absolute inset-0 flex flex-col items-center justify-center pb-28 md:pb-20 px-4">
             <div className="container max-w-2xl">
               <p className="text-primary-foreground/70 text-xs md:text-sm font-semibold uppercase tracking-widest text-center mb-2">
-                Discover • Book • Experience
+                {t('hero.tagline')}
               </p>
               <h1 className="text-primary-foreground text-3xl md:text-5xl font-extrabold text-center mb-5 md:mb-7 leading-tight tracking-tight">
-                Discover Your Next<br className="md:hidden" /> Experience
+                {t('hero.title')}
               </h1>
               <SearchBarWithSuggestions
                 value={searchQuery} onChange={setSearchQuery}
@@ -483,7 +485,7 @@ const Index = () => {
         {isSearchFocused && (
           <div className="container mx-auto px-4 md:px-6 mt-6 pb-20 md:pb-8">
             <h2 className="text-lg md:text-xl font-bold mb-5 text-foreground">
-              {searchQuery ? 'Search Results' : 'All Listings'}
+              {searchQuery ? t('sections.searchResults') : t('sections.allListings')}
             </h2>
             {loading ? (
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
@@ -491,7 +493,7 @@ const Index = () => {
               </div>
             ) : sortedListings.length === 0 ? (
               <div className="text-center py-16">
-                <p className="text-muted-foreground text-sm">No results found. Try a different search.</p>
+                <p className="text-muted-foreground text-sm">{t('sections.noResults')}</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
@@ -536,7 +538,7 @@ const Index = () => {
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
-                Top Destinations
+                {t('sections.topDestinations')}
               </button>
               <button
                 onClick={!locationLoading ? handleMyLocationTap : undefined}
@@ -547,7 +549,7 @@ const Index = () => {
                 } ${locationLoading ? 'opacity-70 cursor-wait' : ''}`}
               >
                 {locationLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <MapPin className="h-3 w-3" />}
-                {locationLoading ? 'Finding...' : 'Near Me'}
+                {locationLoading ? t('sections.finding') : t('sections.nearMe')}
               </button>
             </div>
           </div>
@@ -555,7 +557,7 @@ const Index = () => {
           <div className="container mx-auto px-4 md:px-6 py-3 md:py-5 space-y-2 md:space-y-4">
             {/* Adventures */}
             <ScrollSection
-              title="Places to Adventure" viewAllPath="/category/campsite"
+              title={t('sections.placesToAdventure')} viewAllPath="/category/campsite"
               accentClass="text-primary" scrollRef={featuredCampsitesRef}
               onScroll={handleScroll('featuredCampsites')}
               hasItems={displayCampsites.length > 0} loading={loadingScrollable}
@@ -565,7 +567,7 @@ const Index = () => {
 
             {/* Hotels */}
             <ScrollSection
-              title="Hotels & Accommodations" viewAllPath="/category/hotels"
+              title={t('sections.hotelsAccommodations')} viewAllPath="/category/hotels"
               accentClass="text-[hsl(180,100%,25%)]" scrollRef={featuredHotelsRef}
               onScroll={handleScroll('featuredHotels')}
               hasItems={displayHotels.length > 0} loading={loadingScrollable}
@@ -575,7 +577,7 @@ const Index = () => {
 
             {/* Trips */}
             <ScrollSection
-              title="Trips & Tours" viewAllPath="/category/trips"
+              title={t('sections.tripsAndTours')} viewAllPath="/category/trips"
               accentClass="text-destructive" scrollRef={featuredTripsRef}
               onScroll={handleScroll('featuredTrips')}
               hasItems={displayTrips.length > 0} loading={loadingScrollable}
@@ -585,7 +587,7 @@ const Index = () => {
 
             {/* Events */}
             <ScrollSection
-              title="Sports & Events" viewAllPath="/category/events"
+              title={t('sections.sportsAndEvents')} viewAllPath="/category/events"
               accentClass="text-[hsl(16,100%,66%)]" scrollRef={featuredEventsRef}
               onScroll={handleScroll('featuredEvents')}
               hasItems={displayEvents.length > 0} loading={loadingScrollable}
@@ -599,7 +601,7 @@ const Index = () => {
                 <div className="flex items-center gap-2 mb-3 md:mb-4">
                   <MapPin className="h-4 w-4 md:h-5 md:w-5 text-blue-500" />
                   <h2 className="text-base sm:text-xl md:text-2xl font-extrabold tracking-tight text-blue-500">
-                    Nearest to You
+                    {t('sections.nearestToYou')}
                   </h2>
                 </div>
                 <div className="flex gap-3 md:gap-4 overflow-x-auto pb-2 scrollbar-hide scroll-smooth snap-x snap-mandatory">
@@ -641,17 +643,17 @@ const Index = () => {
                   <Navigation className="h-8 w-8 text-primary" />
                 </div>
               </div>
-              <AlertDialogTitle className="text-center">Turn On Location</AlertDialogTitle>
+              <AlertDialogTitle className="text-center">{t('location.turnOn')}</AlertDialogTitle>
               <AlertDialogDescription className="text-center">
-                Enable location access to see places near you and get the best local experiences.
+                {t('location.description')}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
               <AlertDialogAction onClick={() => { setShowLocationDialog(false); forceRequestLocation(); }} className="w-full bg-primary hover:bg-primary/90">
-                Try Again
+                {t('location.tryAgain')}
               </AlertDialogAction>
               <AlertDialogAction onClick={() => { setShowLocationDialog(false); setListingViewMode('top_destinations'); }} className="w-full bg-muted text-muted-foreground hover:bg-muted/80">
-                Continue Without Location
+                {t('location.continueWithout')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

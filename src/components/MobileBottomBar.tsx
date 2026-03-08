@@ -3,6 +3,7 @@ import { Home, Ticket, Heart, User, ChevronLeft } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 import { AccountSheet } from "@/components/AccountSheet";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { TealLoader } from "@/components/ui/teal-loader";
@@ -20,6 +21,7 @@ export const MobileBottomBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [bookingsOpen, setBookingsOpen] = useState(false);
   const [savedOpen, setSavedOpen] = useState(false);
 
@@ -45,9 +47,9 @@ export const MobileBottomBar = () => {
   };
 
   const navItems = [
-    { icon: Home, label: "Home", path: "/" },
-    { icon: Ticket, label: "Bookings", path: "/bookings" },
-    { icon: Heart, label: "Saved", path: "/saved" },
+    { icon: Home, label: t('nav.home'), path: "/" },
+    { icon: Ticket, label: t('nav.bookings'), path: "/bookings" },
+    { icon: Heart, label: t('nav.saved'), path: "/saved" },
   ];
 
   return (
@@ -132,7 +134,7 @@ export const MobileBottomBar = () => {
                   <User className="h-5 w-5 transition-colors duration-300 text-slate-400" strokeWidth={2} />
                 </div>
                 <span className="text-[10px] font-black uppercase tracking-[0.1em] transition-colors duration-300 text-slate-400">
-                  Profile
+                  {t('nav.profile')}
                 </span>
               </button>
             </AccountSheet>
@@ -142,7 +144,7 @@ export const MobileBottomBar = () => {
                 <User className="h-5 w-5 transition-colors duration-300 text-slate-400" strokeWidth={2} />
               </div>
               <span className="text-[10px] font-black uppercase tracking-[0.1em] transition-colors duration-300 text-slate-400">
-                Profile
+                {t('nav.profile')}
               </span>
             </Link>
           )}
@@ -166,7 +168,7 @@ export const MobileBottomBar = () => {
             >
               <ChevronLeft size={22} />
             </button>
-            <h2 className="text-lg font-semibold">My Bookings</h2>
+            <h2 className="text-lg font-semibold">{t('nav.myBookings')}</h2>
           </div>
 
           <div
@@ -199,7 +201,7 @@ export const MobileBottomBar = () => {
             >
               <ChevronLeft size={22} />
             </button>
-            <h2 className="text-lg font-semibold">Saved Items</h2>
+            <h2 className="text-lg font-semibold">{t('nav.savedItems')}</h2>
           </div>
 
           {/*
