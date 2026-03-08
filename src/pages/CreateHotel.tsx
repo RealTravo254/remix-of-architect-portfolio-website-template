@@ -382,6 +382,7 @@ interface ActivityBuilderProps {
 }
 
 const ActivityBuilder = ({ items, onChange, showErrors, onValidationFail }: ActivityBuilderProps) => {
+  const { usdHint } = useCurrency();
   const update = (id: string, patch: Partial<ActivityItem>) =>
     onChange(items.map((a) => (a.id === id ? { ...a, ...patch } : a)));
 
