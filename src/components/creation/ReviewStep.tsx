@@ -276,7 +276,7 @@ export const ReviewStep = ({ type, data, creatorName, creatorEmail, creatorPhone
                       ? "bg-emerald-500/10 text-emerald-600"
                       : "bg-amber-500/10 text-amber-600"
                   }`}>
-                    {facility.is_free || facility.price === 0 ? "Free" : `KES ${facility.price.toLocaleString()}/night`}
+                    {facility.is_free || facility.price === 0 ? "Free" : `${currencyFormat(facility.price)}/night`}
                   </span>
                 </div>
                 <div className="flex items-center gap-3 flex-wrap">
