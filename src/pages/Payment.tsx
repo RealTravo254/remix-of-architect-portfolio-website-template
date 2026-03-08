@@ -300,7 +300,7 @@ export default function Payment() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs font-black text-emerald-600">+KES {Number(c.commission_amount).toLocaleString()}</p>
+                        <p className="text-xs font-black text-emerald-600">+{formatPrice(Number(c.commission_amount))}</p>
                         <p className="text-[8px] font-bold text-muted-foreground uppercase">
                           {c.withdrawn_at ? 'Withdrawn' : c.status === 'paid' ? 'Available' : c.status}
                         </p>
