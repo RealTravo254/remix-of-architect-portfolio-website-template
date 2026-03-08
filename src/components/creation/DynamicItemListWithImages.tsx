@@ -105,9 +105,10 @@ export const DynamicItemListWithImages = ({
 
   const isItemValid = () => {
     if (!newItem.name.trim()) return false;
-    // Name is required; if showCapacity, capacity must be filled; if paid, price must be filled
     if (showCapacity && (!newItem.capacity || parseInt(newItem.capacity) <= 0)) return false;
     if (showPrice && newItem.priceType === "paid" && (!newItem.price || parseFloat(newItem.price) <= 0)) return false;
+    const imageCount = (newItem.images?.length || 0) + (newItem.tempImages?.length || 0);
+    if (imageCount < 5) return false;
     return true;
   };
 
