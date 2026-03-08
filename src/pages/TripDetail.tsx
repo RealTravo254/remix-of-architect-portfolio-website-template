@@ -359,7 +359,7 @@ const TripDetail = () => {
                 <div>
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Ticket Price</p>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-lg font-bold text-destructive">KSh {event.price}</span>
+                    <span className="text-lg font-bold text-destructive">{formatPrice(event.price)}</span>
                     <span className="text-slate-400 text-[10px] font-bold uppercase tracking-tighter">/ adult</span>
                   </div>
                 </div>
