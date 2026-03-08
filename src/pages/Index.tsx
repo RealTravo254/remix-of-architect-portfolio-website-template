@@ -51,9 +51,9 @@ const ScrollSection = memo(({ title, viewAllPath, accentClass, children, scrollR
         </h2>
         <Link
           to={viewAllPath}
-          className="text-xs md:text-sm font-semibold text-muted-foreground hover:text-primary transition-colors shrink-0"
+          className="text-xs md:text-sm font-semibold text-primary hover:text-primary/80 transition-colors shrink-0"
         >
-          {title ? "→" : "→"}
+          View All →
         </Link>
       </div>
       <div className="relative group">
