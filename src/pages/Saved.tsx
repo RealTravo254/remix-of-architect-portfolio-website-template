@@ -131,12 +131,10 @@ const Saved = () => {
           : "container mx-auto px-4 py-12"
       }>
         {!isEmbeddedInSheet && (
-          <aside className="lg:col-span-4">
-            <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 sticky top-24">
-              <h1 className="text-3xl font-bold tracking-tight text-slate-900 mb-2">Saved Places</h1>
-              <p className="text-slate-500 text-sm">Your curated collection of adventures and stays.</p>
-            </div>
-          </aside>
+          <header className="mb-8">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground mb-2">Saved Places</h1>
+            <p className="text-muted-foreground text-sm">Your curated collection of adventures and stays.</p>
+          </header>
         )}
 
         <main className={isEmbeddedInSheet ? "space-y-3" : "lg:col-span-8 space-y-3"}>
