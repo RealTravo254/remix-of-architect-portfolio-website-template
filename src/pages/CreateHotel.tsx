@@ -602,7 +602,7 @@ const CreateHotel = () => {
     if (!formData.openingHours) e.openingHours = true;
     if (!formData.closingHours) e.closingHours = true;
     if (!Object.values(workingDays).some((v) => v)) e.workingDays = true;
-    if (galleryImages.length === 0) e.galleryImages = true;
+    if (galleryImages.length < 5) e.galleryImages = true;
     if (!formData.description.trim()) e.description = true;
     if (isAccommodationOnly && !formData.generalBookingLink.trim()) e.generalBookingLink = true;
 
