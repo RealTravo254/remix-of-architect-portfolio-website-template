@@ -247,7 +247,7 @@ const AccountsOverview = () => {
     return (
       <div className="min-h-screen bg-[#F8F9FA]">
         <Header />
-        <main className="container mx-auto px-4 py-8 max-w-6xl space-y-6">
+        <main className="container mx-auto px-4 py-8 space-y-6">
           <Skeleton className="h-12 w-60 rounded-2xl" />
           <Skeleton className="h-64 w-full rounded-3xl" />
         </main>
@@ -258,7 +258,7 @@ const AccountsOverview = () => {
   return (
     <div className="min-h-screen bg-[#F8F9FA] pb-24">
       <Header />
-      <main className="container mx-auto px-4 py-8 max-w-6xl">
+      <main className="container mx-auto px-4 py-8">
         <Button variant="ghost" onClick={() => navigate("/admin")} className="mb-6 font-black uppercase text-[10px] tracking-widest">
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Admin
         </Button>

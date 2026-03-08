@@ -122,7 +122,7 @@ const PendingApprovalItems = () => {
 
       {/* Hero Header Section */}
       <div className="bg-white border-b border-slate-100 pt-12 pb-16 px-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="container mx-auto px-4">
           <Button
             onClick={() => navigate(-1)}
             variant="ghost"
@@ -158,7 +158,7 @@ const PendingApprovalItems = () => {
         </div>
       </div>
 
-      <main className="container px-4 max-w-4xl mx-auto -mt-8 relative z-10">
+      <main className="container px-4 mx-auto -mt-8 relative z-10">
         {filteredItems.length === 0 ? (
           <div className="bg-white rounded-[28px] p-12 text-center shadow-sm border border-slate-100">
             <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">

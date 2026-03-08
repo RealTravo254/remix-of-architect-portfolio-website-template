@@ -184,7 +184,7 @@ const VerificationDetail = () => {
       
       {/* Top Banner / Hero Style */}
       <div className="bg-white border-b border-slate-100 pt-8 pb-12">
-        <div className="container max-w-6xl mx-auto px-4">
+        <div className="container mx-auto px-4">
           <Button 
             onClick={() => navigate(-1)} 
             variant="ghost" 
@@ -219,7 +219,7 @@ const VerificationDetail = () => {
         </div>
       </div>
 
-      <main className="container max-w-6xl mx-auto px-4 -mt-6">
+      <main className="container mx-auto px-4 -mt-6">
         <div className="grid lg:grid-cols-[1fr,350px] gap-8">
           
           {/* Documents Section */}

@@ -154,7 +154,7 @@ const HostItemDetail = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
         <div className="absolute bottom-8 left-0 w-full p-8 z-40">
-          <div className="container max-w-6xl mx-auto">
+          <div className="container mx-auto">
             <div className="mb-4">{getStatusBadge(item.approval_status)}</div>
             <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none text-white drop-shadow-2xl mb-3">
               {item.name}
@@ -167,7 +167,7 @@ const HostItemDetail = () => {
         </div>
       </div>
 
-      <main className="container px-4 max-w-6xl mx-auto -mt-10 relative z-50">
+      <main className="container px-4 mx-auto -mt-10 relative z-50">
         <div className="grid lg:grid-cols-[1.7fr,1fr] gap-6">
           
           {/* Main Column */}

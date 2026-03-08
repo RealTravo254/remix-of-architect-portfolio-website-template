@@ -130,7 +130,7 @@ const AllBookings = () => {
       {/* Hero Admin Header */}
       <div className="bg-[#008080] pt-12 pb-20 px-4 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl" />
-        <div className="max-w-6xl mx-auto relative z-10">
+        <div className="container mx-auto px-4 relative z-10">
           <Button 
             onClick={() => navigate("/admin")} 
             className="bg-white/10 hover:bg-white/20 border-none text-white rounded-full mb-6"
@@ -173,7 +173,7 @@ const AllBookings = () => {
         </div>
       </div>
 
-      <main className="container px-4 max-w-6xl mx-auto -mt-10 relative z-50">
+      <main className="container px-4 mx-auto -mt-10 relative z-50">
         <div className="grid lg:grid-cols-[1fr,1.5fr] gap-6">
           
           {/* List Section */}
