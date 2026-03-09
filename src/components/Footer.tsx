@@ -155,12 +155,12 @@ export const Footer = ({ className = "" }: { className?: string }) => {
           </p>
         </div>
 
-        {/* Language & Mobile Section - Updated for mobile ordering */}
+        {/* Language & Mobile Section */}
         <div className="mt-10 bg-slate-800 rounded-2xl p-8">
-          <div className="flex flex-col md:grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            {/* Currency Selector - order-1 on mobile */}
-            <div className="space-y-3 order-1 md:order-none">
+            {/* Currency Selector */}
+            <div className="space-y-3">
               <h3 className="font-bold text-white text-xs uppercase tracking-[0.1em] flex items-center gap-2">
                 💱 Currency
               </h3>
@@ -190,9 +190,8 @@ export const Footer = ({ className = "" }: { className?: string }) => {
                 {rateLoading ? "Fetching live rate..." : `Live rate: 1 USD = ${rate.toFixed(2)} KES`}
               </p>
             </div>
-
-            {/* Language Selector - order-2 on mobile */}
-            <div className="space-y-3 order-2 md:order-none">
+            {/* Language Selector */}
+            <div className="space-y-3">
               <h3 className="font-bold text-white text-xs uppercase tracking-[0.1em] flex items-center gap-2">
                 <Globe className="h-4 w-4 text-teal-400" />
                 {t('footer.language')}
@@ -213,8 +212,8 @@ export const Footer = ({ className = "" }: { className?: string }) => {
               </p>
             </div>
 
-            {/* Mobile App Badges - order-3 on mobile */}
-            <div className="space-y-3 order-3 md:order-none">
+            {/* Mobile App Badges */}
+            <div className="space-y-3">
               <h3 className="font-bold text-white text-xs uppercase tracking-[0.1em]">{t('footer.mobile')}</h3>
               <div className="flex flex-col gap-3">
                 <a
