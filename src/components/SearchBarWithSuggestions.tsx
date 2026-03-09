@@ -226,8 +226,8 @@ export const SearchBarWithSuggestions = React.forwardRef<HTMLDivElement, SearchB
 
   return (
     <div className="w-full">
-      <div className="container mx-auto px-4 md:px-6 lg:px-8">
-        <div ref={wrapperRef} className="relative w-full max-w-4xl mx-auto px-3 md:px-0" style={{ isolation: 'isolate' }}>
+      <div className="w-full px-3 md:container md:mx-auto md:px-6 lg:px-8">
+        <div ref={wrapperRef} className="relative w-full max-w-4xl mx-auto" style={{ isolation: 'isolate' }}>
           <div className="flex items-center gap-3">
             {showBackButton && (
               <Button variant="ghost" size="icon" onClick={onBack} className="rounded-full bg-white shadow-sm border border-slate-100 hover:text-[#008080]">
@@ -270,7 +270,7 @@ export const SearchBarWithSuggestions = React.forwardRef<HTMLDivElement, SearchB
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Most Popular</p>
                       </div>
                       <div className="space-y-1">
-                        {mostPopular.slice(0, 4).map((item) => (
+                        {mostPopular.slice(0, 5).map((item) => (
                           <button
                             key={item.id}
                             onClick={() => handleSuggestionClick(item)}
@@ -348,7 +348,7 @@ export const SearchBarWithSuggestions = React.forwardRef<HTMLDivElement, SearchB
                   {!isSearching && suggestions.length > 0 && (
                     <>
                       <p className="px-5 py-3 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Top Matches</p>
-                      {suggestions.map((result) => (
+                      {suggestions.slice(0, 5).map((result) => (
                         <button
                           key={result.id}
                           onClick={() => handleSuggestionClick(result)}
