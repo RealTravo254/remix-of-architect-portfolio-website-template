@@ -11,60 +11,51 @@ interface ListingSkeletonProps {
 const ListingSkeletonComponent = ({ compact = false, className }: ListingSkeletonProps) => {
   return (
     <Card className={cn(
-      "group relative flex flex-col overflow-hidden rounded-[32px] border border-slate-200/80 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
+      "group relative flex flex-row overflow-hidden rounded-xl border border-border bg-card shadow-sm",
       compact ? "h-auto" : "h-full",
       className
     )}>
-      {/* Image Container - matches ListingCard 4/3 ratio */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
+      {/* Image - matches ListingCard horizontal image */}
+      <div className="relative w-[130px] sm:w-[160px] md:w-[220px] lg:w-[280px] flex-shrink-0 min-h-[120px] md:min-h-[160px] lg:min-h-[200px]">
         <Skeleton className="absolute inset-0 h-full w-full rounded-none" />
-
-        {/* Category Badge */}
-        <div className="absolute left-4 top-4 z-20 flex flex-col gap-2">
-          <Skeleton className="h-6 w-24 rounded-full bg-white/60" />
-          <Skeleton className="h-5 w-14 rounded-full bg-black/10" />
-        </div>
-
-        {/* Heart Button */}
-        <Skeleton className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/20" />
+        {/* Heart */}
+        <Skeleton className="absolute top-2 right-2 h-8 w-8 rounded-full" />
       </div>
 
-      {/* Content Section - matches ListingCard p-6 */}
-      <div className="flex flex-1 flex-col p-6">
+      {/* Content - matches ListingCard right side */}
+      <div className="flex flex-1 flex-col justify-between p-3 sm:p-4 min-w-0 gap-1.5">
+        {/* Category + Urgency */}
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-3 w-20 rounded-sm" />
+        </div>
+
         {/* Title */}
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-11/12 rounded-md" />
-          <Skeleton className="h-5 w-7/12 rounded-md" />
+        <div className="space-y-1">
+          <Skeleton className="h-4 w-11/12 rounded-sm" />
+          <Skeleton className="h-4 w-7/12 rounded-sm" />
         </div>
 
-        {/* Location Row */}
-        <div className="mt-2 flex items-center gap-1.5">
-          <Skeleton className="h-3.5 w-3.5 rounded-sm flex-shrink-0" />
-          <Skeleton className="h-3 w-36 rounded-sm" />
+        {/* Activities subtitle */}
+        <Skeleton className="h-3 w-3/4 rounded-sm" />
+
+        {/* Location */}
+        <div className="flex items-center gap-1">
+          <Skeleton className="h-3 w-3 rounded-sm flex-shrink-0" />
+          <Skeleton className="h-3 w-28 rounded-sm" />
         </div>
 
-        {/* Tags */}
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Skeleton className="h-6 w-16 rounded-lg bg-slate-50 border border-slate-100" />
-          <Skeleton className="h-6 w-20 rounded-lg bg-slate-50 border border-slate-100" />
-        </div>
-
-        {/* Footer */}
-        <div className="mt-auto flex items-end justify-between border-t border-slate-100 pt-5">
-          <div className="space-y-2">
-            <Skeleton className="h-2.5 w-16 rounded-sm" />
-            <Skeleton className="h-6 w-28 rounded-sm" />
+        {/* Bottom row: Rating + Date + Price */}
+        <div className="flex items-center justify-between gap-2 pt-1.5 mt-auto border-t border-border/50">
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-3 w-10 rounded-sm" />
+            <Skeleton className="h-3 w-14 rounded-sm" />
           </div>
-
-          <div className="flex flex-col items-end gap-2">
-            <Skeleton className="h-6 w-20 rounded-full" />
-            <Skeleton className="h-3 w-16 rounded-sm" />
+          <div className="flex flex-col items-end gap-0.5">
+            <Skeleton className="h-4 w-16 rounded-sm" />
+            <Skeleton className="h-2 w-10 rounded-sm" />
           </div>
         </div>
       </div>
-
-      {/* Bottom bar accent like ListingCard hover bar */}
-      <div className="absolute bottom-0 h-1.5 w-0 bg-primary/20" />
     </Card>
   );
 };
