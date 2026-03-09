@@ -187,13 +187,13 @@ const Index = () => {
     const fetchLimit = Math.max(limit * 3, 30);
     try {
       const [tripsData, hotelsData, campsitesData, eventsData] = await Promise.all([
-        supabase.from("trips").select("id,name,location,place,country,image_url,date,is_custom_date,is_flexible_date,available_tickets,activities,type,created_at,price,price_child")
+        supabase.from("trips").select("id,name,location,place,country,image_url,date,is_custom_date,is_flexible_date,available_tickets,activities,type,created_at,price,price_child,description")
           .eq("approval_status", "approved").eq("is_hidden", false).eq("type", "trip").order("date", { ascending: true }).limit(fetchLimit),
-        supabase.from("hotels").select("id,name,location,place,country,image_url,activities,latitude,longitude,created_at,establishment_type")
+        supabase.from("hotels").select("id,name,location,place,country,image_url,activities,latitude,longitude,created_at,establishment_type,description")
           .eq("approval_status", "approved").eq("is_hidden", false).limit(fetchLimit),
-        supabase.from("adventure_places").select("id,name,location,place,country,image_url,entry_fee,activities,latitude,longitude,created_at")
+        supabase.from("adventure_places").select("id,name,location,place,country,image_url,entry_fee,activities,latitude,longitude,created_at,description")
           .eq("approval_status", "approved").eq("is_hidden", false).limit(fetchLimit),
-        supabase.from("trips").select("id,name,location,place,country,image_url,date,is_custom_date,is_flexible_date,available_tickets,activities,type,created_at,price,price_child")
+        supabase.from("trips").select("id,name,location,place,country,image_url,date,is_custom_date,is_flexible_date,available_tickets,activities,type,created_at,price,price_child,description")
           .eq("approval_status", "approved").eq("is_hidden", false).eq("type", "event").order("date", { ascending: true }).limit(fetchLimit),
       ]);
       setScrollableRows({
