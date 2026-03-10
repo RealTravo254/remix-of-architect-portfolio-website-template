@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
   MapPin, Clock, ArrowLeft, 
-  Heart, Star, Circle, Calendar, Loader2, Share2, Copy, Navigation, AlertCircle, Phone, Mail
+  Heart, Star, Circle, Calendar, Share2, Copy, Navigation, AlertCircle, Phone, Mail
 } from "lucide-react";
 import { SimilarItems } from "@/components/SimilarItems";
 import { useToast } from "@/hooks/use-toast";
@@ -15,7 +15,6 @@ import Autoplay from "embla-carousel-autoplay";
 import { ReviewSection } from "@/components/ReviewSection";
 import { FacilitiesGrid, ActivitiesGrid } from "@/components/detail/FacilityActivityCards";
 import { useSavedItems } from "@/hooks/useSavedItems";
-import { extractIdFromSlug } from "@/lib/slugUtils";
 import { useGeolocation, calculateDistance } from "@/hooks/useGeolocation";
 import { trackReferralClick } from "@/lib/referralUtils";
 import { getShareLink } from "@/lib/shareUtils";
@@ -30,13 +29,14 @@ import { Footer } from "@/components/Footer";
 
 const AdventurePlaceDetail = () => {
   const { slug } = useParams();
-  const id = slug ? extractIdFromSlug(slug) : null;
+  // ✅ slug IS the id — matches EventDetail pattern exactly
+  const id = slug ?? null;
   const navigate = useNavigate();
   const goBack = useSafeBack();
   const { toast } = useToast();
   const { position, requestLocation } = useGeolocation();
   const { formatPrice } = useCurrency();
-  
+
   const [place, setPlace] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [isOpenNow, setIsOpenNow] = useState(false);
@@ -57,7 +57,7 @@ const AdventurePlaceDetail = () => {
     const extractPrices = (arr: any[]) => {
       if (!Array.isArray(arr)) return;
       arr.forEach((item) => {
-        const p = typeof item === 'object' ? item.price : null;
+        const p = typeof item === "object" ? item.price : null;
         if (p) prices.push(Number(p));
       });
     };
@@ -66,9 +66,8 @@ const AdventurePlaceDetail = () => {
     return prices.length > 0 ? Math.min(...prices) : 0;
   };
 
-  const startingPrice = getStartingPrice();
-
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (id) {
       Promise.all([fetchPlace(), fetchLiveRating()]);
     }
@@ -76,8 +75,7 @@ const AdventurePlaceDetail = () => {
     const refSlug = urlParams.get("ref");
     if (refSlug && id) trackReferralClick(refSlug, id, "adventure_place", "booking");
     requestLocation();
-    window.scrollTo(0, 0);
-  }, [id, slug]);
+  }, [id]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 300);
@@ -89,28 +87,28 @@ const AdventurePlaceDetail = () => {
     if (!place) return;
     const checkOpenStatus = () => {
       const now = new Date();
-      const currentDay = now.toLocaleString('en-us', { weekday: 'long' }).toLowerCase();
+      const currentDay = now.toLocaleString("en-us", { weekday: "long" }).toLowerCase();
       if (place.opening_hours === "00:00" && place.closing_hours === "23:59") {
-        const days = Array.isArray(place.days_opened) 
-          ? place.days_opened.map((d: string) => d.toLowerCase()) 
-          : ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+        const days = Array.isArray(place.days_opened)
+          ? place.days_opened.map((d: string) => d.toLowerCase())
+          : ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
         setIsOpenNow(days.includes(currentDay));
         return;
       }
       const currentTime = now.getHours() * 60 + now.getMinutes();
       const parseTime = (timeStr: string) => {
         if (!timeStr) return 0;
-        const [time, modifier] = timeStr.split(' ');
-        let [hours, minutes] = time.split(':').map(Number);
-        if (modifier === 'PM' && hours < 12) hours += 12;
-        if (modifier === 'AM' && hours === 12) hours = 0;
+        const [time, modifier] = timeStr.split(" ");
+        let [hours, minutes] = time.split(":").map(Number);
+        if (modifier === "PM" && hours < 12) hours += 12;
+        if (modifier === "AM" && hours === 12) hours = 0;
         return hours * 60 + minutes;
       };
       const openTime = parseTime(place.opening_hours || "08:00 AM");
       const closeTime = parseTime(place.closing_hours || "06:00 PM");
-      const days = Array.isArray(place.days_opened) 
-        ? place.days_opened.map((d: string) => d.toLowerCase()) 
-        : ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+      const days = Array.isArray(place.days_opened)
+        ? place.days_opened.map((d: string) => d.toLowerCase())
+        : ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
       setIsOpenNow(days.includes(currentDay) && currentTime >= openTime && currentTime <= closeTime);
     };
     checkOpenStatus();
@@ -121,14 +119,14 @@ const AdventurePlaceDetail = () => {
   const fetchPlace = async () => {
     if (!id) return;
     try {
-      // Step 1: exact match on id column (works for both UUID and legacy friendly IDs)
+      // Step 1: match on id column
       let { data } = await supabase
         .from("adventure_places")
         .select("*")
         .eq("id", id)
         .maybeSingle() as { data: any };
 
-      // Step 2: fallback to slug column (new listings store friendly slug separately)
+      // Step 2: fallback to slug column
       if (!data) {
         const res = await supabase
           .from("adventure_places")
@@ -142,13 +140,19 @@ const AdventurePlaceDetail = () => {
       setPlace(data);
     } catch (error) {
       toast({ title: "Place not found", variant: "destructive" });
-      navigate('/');
-    } finally { setLoading(false); }
+      navigate("/");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchLiveRating = async () => {
     if (!id) return;
-    const { data } = await supabase.from("reviews").select("rating").eq("item_id", id).eq("item_type", "adventure_place");
+    const { data } = await supabase
+      .from("reviews")
+      .select("rating")
+      .eq("item_id", id)
+      .eq("item_type", "adventure_place");
     if (data && data.length > 0) {
       const avg = data.reduce((acc, curr) => acc + curr.rating, 0) / data.length;
       setLiveRating({ avg: parseFloat(avg.toFixed(1)), count: data.length });
@@ -163,7 +167,6 @@ const AdventurePlaceDetail = () => {
   const activityImages = (Array.isArray(place.activities) ? place.activities : [])
     .flatMap((a: any) => (Array.isArray(a.images) ? a.images : []));
   const allImages = [place.image_url, ...(place.gallery_images || []), ...facilityImages, ...activityImages].filter(Boolean);
-
   const is24Hours = place.opening_hours === "00:00" && place.closing_hours === "23:59";
 
   const OperatingHoursInfo = () => (
@@ -183,7 +186,9 @@ const AdventurePlaceDetail = () => {
           <span className="text-[10px] font-black uppercase tracking-tight">Working Days</span>
         </div>
         <p className="text-[10px] font-normal leading-tight text-slate-500 lowercase italic">
-          {Array.isArray(place.days_opened) ? place.days_opened.join(", ") : "monday, tuesday, wednesday, thursday, friday, saturday, sunday"}
+          {Array.isArray(place.days_opened)
+            ? place.days_opened.join(", ")
+            : "monday, tuesday, wednesday, thursday, friday, saturday, sunday"}
         </p>
       </div>
     </div>
@@ -200,6 +205,7 @@ const AdventurePlaceDetail = () => {
       />
 
       <div className="max-w-6xl mx-auto md:px-4 md:pt-3">
+        {/* Mobile Carousel */}
         <div className="relative w-full h-[45vh] bg-slate-900 overflow-hidden md:rounded-3xl md:hidden">
           <div className="absolute top-4 left-0 right-0 px-3 z-50 flex justify-between items-center">
             <Button onClick={goBack} className="rounded-full w-10 h-10 p-0 border-none bg-white/90 backdrop-blur-sm text-slate-900 hover:bg-white shadow-lg transition-all">
@@ -216,8 +222,10 @@ const AdventurePlaceDetail = () => {
             <CarouselContent className="h-full ml-0">
               {allImages.length > 0 ? allImages.map((img, idx) => (
                 <CarouselItem key={idx} className="h-full pl-0 basis-full">
-                  <img src={img} alt={`${place.name} - ${idx + 1}`} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent z-10" />
+                  <div className="relative h-full w-full">
+                    <img src={img} alt={`${place.name} - ${idx + 1}`} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent z-10" />
+                  </div>
                 </CarouselItem>
               )) : (
                 <div className="h-full w-full bg-slate-200 flex items-center justify-center text-slate-400 font-black uppercase text-xs">No Image</div>
@@ -239,12 +247,13 @@ const AdventurePlaceDetail = () => {
               <h1 className="text-2xl font-black text-white uppercase tracking-tighter leading-none mb-2">{place.name}</h1>
               <div className="flex items-center gap-1 text-white">
                 <MapPin className="h-3.5 w-3.5" />
-                <span className="text-xs font-bold uppercase truncate">{[place.place, place.location, place.country].filter(Boolean).join(', ')}</span>
+                <span className="text-xs font-bold uppercase truncate">{[place.place, place.location, place.country].filter(Boolean).join(", ")}</span>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Desktop Grid */}
         <div className="hidden md:block relative">
           <div className="absolute top-6 left-6 right-6 z-50 flex justify-between items-center">
             <Button onClick={goBack} className="rounded-full w-12 h-12 p-0 border-none bg-white/90 backdrop-blur-sm text-slate-900 hover:bg-white shadow-lg transition-all">
@@ -263,34 +272,32 @@ const AdventurePlaceDetail = () => {
                 <div className="col-span-2 row-span-2 rounded-3xl overflow-hidden relative group">
                   <img src={allImages[0]} alt={place.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                  <div className="absolute bottom-6 left-6 right-6 z-20">
-                    <div className="space-y-3">
-                      <div className="flex flex-wrap gap-2">
-                        <Badge className="bg-amber-400 text-black border-none px-3 py-1 text-[10px] font-black uppercase rounded-full flex items-center gap-1.5 shadow-lg">
-                          <Star className="h-3.5 w-3.5 fill-current" />{liveRating.avg > 0 ? liveRating.avg : ""}
-                        </Badge>
-                        <Badge className={`${isOpenNow ? "bg-emerald-500" : "bg-red-500"} text-white border-none px-3 py-1 text-[10px] font-black uppercase rounded-full flex items-center gap-1.5`}>
-                          <Circle className={`h-2.5 w-2.5 fill-current ${isOpenNow ? "animate-pulse" : ""}`} />
-                          {isOpenNow ? "open now" : ""}
-                        </Badge>
-                      </div>
-                      <h1 className="text-3xl font-black text-white uppercase tracking-tighter leading-none">{place.name}</h1>
-                      <div className="flex items-center gap-2 text-white">
-                        <MapPin className="h-4 w-4" />
-                        <span className="text-sm font-bold uppercase">{[place.place, place.location, place.country].filter(Boolean).join(', ')}</span>
-                      </div>
+                  <div className="absolute bottom-6 left-6 right-6 z-20 space-y-3">
+                    <div className="flex flex-wrap gap-2">
+                      <Badge className="bg-amber-400 text-black border-none px-3 py-1 text-[10px] font-black uppercase rounded-full flex items-center gap-1.5 shadow-lg">
+                        <Star className="h-3.5 w-3.5 fill-current" />{liveRating.avg > 0 ? liveRating.avg : "New"}
+                      </Badge>
+                      <Badge className={`${isOpenNow ? "bg-emerald-500" : "bg-red-500"} text-white border-none px-3 py-1 text-[10px] font-black uppercase rounded-full flex items-center gap-1.5`}>
+                        <Circle className={`h-2.5 w-2.5 fill-current ${isOpenNow ? "animate-pulse" : ""}`} />
+                        {isOpenNow ? "open now" : "closed"}
+                      </Badge>
+                    </div>
+                    <h1 className="text-3xl font-black text-white uppercase tracking-tighter leading-none">{place.name}</h1>
+                    <div className="flex items-center gap-2 text-white">
+                      <MapPin className="h-4 w-4" />
+                      <span className="text-sm font-bold uppercase">{[place.place, place.location, place.country].filter(Boolean).join(", ")}</span>
                     </div>
                   </div>
                 </div>
                 {allImages[1] && (
                   <div className="col-span-2 rounded-3xl overflow-hidden relative group">
-                    <img src={allImages[1]} alt={`${place.name} - Gallery 2`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <img src={allImages[1]} alt={`${place.name} - 2`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   </div>
                 )}
                 <div className="col-span-2 grid grid-cols-3 gap-2">
                   {allImages.slice(2, 5).map((img, idx) => (
                     <div key={idx} className="rounded-2xl overflow-hidden relative group">
-                      <img src={img} alt={`${place.name} - Gallery ${idx + 3}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <img src={img} alt={`${place.name} - ${idx + 3}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     </div>
                   ))}
                 </div>
@@ -306,8 +313,8 @@ const AdventurePlaceDetail = () => {
       </div>
 
       <div className="md:hidden container px-4 mt-4 max-w-6xl mx-auto">
-        <QuickNavigationBar 
-          hasFacilities={place.facilities?.length > 0} 
+        <QuickNavigationBar
+          hasFacilities={place.facilities?.length > 0}
           hasActivities={place.activities?.length > 0}
           hasContact={place.phone_numbers?.length > 0 || !!place.email}
         />
@@ -321,15 +328,17 @@ const AdventurePlaceDetail = () => {
               {place.description ? (
                 <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">{place.description}</p>
               ) : (
-                <div className="flex items-center gap-2 text-slate-300 italic py-4"><AlertCircle className="h-4 w-4" /> Description coming soon</div>
+                <div className="flex items-center gap-2 text-slate-300 italic py-4">
+                  <AlertCircle className="h-4 w-4" /> Description coming soon
+                </div>
               )}
             </section>
 
             <div className="md:hidden"><OperatingHoursInfo /></div>
 
             <GeneralFacilitiesDisplay facilityIds={
-              Array.isArray(place.amenities) 
-                ? place.amenities.map((a: any) => typeof a === 'string' ? a : a.name || '') 
+              Array.isArray(place.amenities)
+                ? place.amenities.map((a: any) => typeof a === "string" ? a : a.name || "")
                 : []
             } />
 
@@ -345,6 +354,7 @@ const AdventurePlaceDetail = () => {
               </div>
             )}
 
+            {/* Mobile booking card */}
             <div className="bg-white rounded-[32px] p-6 shadow-xl border border-slate-100 lg:hidden">
               <div className="flex justify-between items-start mb-6">
                 <div>
@@ -400,10 +410,11 @@ const AdventurePlaceDetail = () => {
             </div>
           </div>
 
+          {/* Desktop sidebar */}
           <div className="hidden lg:block">
             <div className="sticky top-24 bg-white rounded-[40px] p-8 shadow-2xl border border-slate-100 space-y-6">
               <div className="text-center">
-                <p className="text-xs font-black uppercase text-slate-400 mb-1">Starting from/Entrtace Fee</p>
+                <p className="text-xs font-black uppercase text-slate-400 mb-1">Starting from / Entrance Fee</p>
                 {place.entry_fee && place.entry_fee > 0 ? (
                   <div className="space-y-1">
                     <h3 className="text-xl font-bold text-destructive">{formatPrice(Number(place.entry_fee))}</h3>
@@ -468,7 +479,7 @@ const AdventurePlaceDetail = () => {
   );
 };
 
-const UtilityButton = ({ icon, label, onClick }: { icon: React.ReactNode, label: string, onClick: () => void }) => (
+const UtilityButton = ({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick: () => void }) => (
   <Button variant="ghost" onClick={onClick} className="flex-col h-auto py-4 bg-slate-50 text-slate-500 rounded-2xl border border-slate-100 hover:bg-slate-100 transition-colors flex-1">
     <div className="mb-1">{icon}</div>
     <span className="text-[10px] font-black uppercase tracking-tighter">{label}</span>
