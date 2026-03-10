@@ -30,7 +30,7 @@ import { Footer } from "@/components/Footer";
 
 const HotelDetail = () => {
   const { slug } = useParams();
-  const id = slug ?? null;
+  const id = slug ? extractIdFromSlug(slug) : null;
   const navigate = useNavigate();
   const goBack = useSafeBack();
   const { toast } = useToast();

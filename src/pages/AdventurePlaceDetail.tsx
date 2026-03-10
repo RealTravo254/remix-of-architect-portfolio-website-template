@@ -29,8 +29,7 @@ import { Footer } from "@/components/Footer";
 
 const AdventurePlaceDetail = () => {
   const { slug } = useParams();
-  // ✅ slug IS the id — matches EventDetail pattern exactly
-  const id = slug ?? null;
+  const id = slug ? extractIdFromSlug(slug) : null;
   const navigate = useNavigate();
   const goBack = useSafeBack();
   const { toast } = useToast();
