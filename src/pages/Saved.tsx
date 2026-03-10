@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import { Trash2, MapPin, ChevronRight, Loader2 } from "lucide-react";
 import { createDetailPath } from "@/lib/slugUtils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { useSavedItems } from "@/hooks/useSavedItems";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -20,6 +21,9 @@ const Saved = () => {
   const { loading: authLoading } = useAuth();
   const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [offset, setOffset] = useState(0);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const { toast } = useToast();
   const hasFetched = useRef(false);
@@ -46,6 +50,7 @@ const Saved = () => {
 
   const fetchSavedItems = async (uid: string, fetchOffset: number) => {
     if (fetchOffset === 0) setIsLoading(true);
+    else setLoadingMore(true);
 
     const { data: savedData } = await supabase
       .from("saved_items")
@@ -55,10 +60,14 @@ const Saved = () => {
       .order('created_at', { ascending: false });
 
     if (!savedData || savedData.length === 0) {
-      setSavedListings([]);
+      if (fetchOffset === 0) setSavedListings([]);
+      setHasMore(false);
       setIsLoading(false);
+      setLoadingMore(false);
       return;
     }
+
+    setHasMore(savedData.length >= ITEMS_PER_PAGE);
 
     const tripIds = savedData
       .filter(s => s.item_type === "trip" || s.item_type === "event")
@@ -93,9 +102,21 @@ const Saved = () => {
       itemMap.set(item.id, { ...item, savedType: original?.item_type });
     });
 
-    setSavedListings(savedData.map(s => itemMap.get(s.item_id)).filter(Boolean));
+    const newItems = savedData.map(s => itemMap.get(s.item_id)).filter(Boolean);
+    if (fetchOffset === 0) {
+      setSavedListings(newItems);
+    } else {
+      setSavedListings(prev => [...prev, ...newItems]);
+    }
+    setOffset(fetchOffset + ITEMS_PER_PAGE);
     hasFetched.current = true;
     setIsLoading(false);
+    setLoadingMore(false);
+  };
+
+  const loadMore = () => {
+    if (!userId || loadingMore || !hasMore) return;
+    fetchSavedItems(userId, offset);
   };
 
   const handleRemoveSingle = async (itemId: string, e: React.MouseEvent) => {
