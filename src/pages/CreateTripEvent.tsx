@@ -430,21 +430,23 @@ const CreateTripEvent = () => {
             </div>
           </Card>
 
-          {/* Operating Hours */}
-          {(formData.is_custom_date || formData.type === 'event') && (
-            <Card className="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100">
-              <h2 className="text-xs font-black uppercase tracking-widest mb-6" style={{ color: COLORS.TEAL }}>Operating Hours *</h2>
-              <OperatingHoursSection
-                openingHours={formData.opening_hours}
-                closingHours={formData.closing_hours}
-                workingDays={workingDays}
-                onOpeningChange={(v) => setFormData({...formData, opening_hours: v})}
-                onClosingChange={(v) => setFormData({...formData, closing_hours: v})}
-                onDaysChange={setWorkingDays}
-                accentColor={COLORS.TEAL}
-              />
-            </Card>
-          )}
+          {/* Operating Hours — always shown for all listing types */}
+          <Card className="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100">
+            <h2 className="text-xs font-black uppercase tracking-widest mb-6" style={{ color: COLORS.TEAL }}>
+              {formData.type === "event" ? "Event Hours *" : "Operating Hours & Days *"}
+            </h2>
+            <OperatingHoursSection
+              openingHours={formData.opening_hours}
+              closingHours={formData.closing_hours}
+              workingDays={workingDays}
+              onOpeningChange={(v) => setFormData({...formData, opening_hours: v})}
+              onClosingChange={(v) => setFormData({...formData, closing_hours: v})}
+              onDaysChange={setWorkingDays}
+              accentColor={COLORS.TEAL}
+              hideDays={formData.type === "event"}
+              hide24HourToggle={true}
+            />
+          </Card>
 
           {/* Description */}
           <Card ref={refs.description} className="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100">

@@ -20,6 +20,10 @@ interface OperatingHoursSectionProps {
   onClosingChange: (value: string) => void;
   onDaysChange: (days: WorkingDays) => void;
   accentColor?: string;
+  /** Hide the operating days selector — use for single-date events */
+  hideDays?: boolean;
+  /** Hide the 24-hour toggle and always show time pickers — use on creation pages */
+  hide24HourToggle?: boolean;
 }
 
 const HOUR_OPTIONS = [
@@ -52,7 +56,6 @@ const formatToStorageTime = (time: string, period: "AM" | "PM"): string => {
   return `${time} ${period}`;
 };
 
-// A value is considered "24 hours" if it matches either storage format
 const check24Hours = (opening: string, closing: string): boolean =>
   (opening === "00:00" && closing === "23:59") ||
   (opening === "12:00 AM" && closing === "11:59 PM");
@@ -64,96 +67,97 @@ export const OperatingHoursSection = ({
   onOpeningChange,
   onClosingChange,
   onDaysChange,
-  accentColor = "#008080"
+  accentColor = "#008080",
+  hideDays = false,
+  hide24HourToggle = false,
 }: OperatingHoursSectionProps) => {
   const is24Hours = check24Hours(openingHours, closingHours);
 
   const openParsed  = parseAmPmTime(openingHours);
   const closeParsed = parseAmPmTime(closingHours);
 
-  const openTime   = openParsed?.time   || "8:00";
-  const openPeriod = openParsed?.period || "AM";
-  const closeTime  = closeParsed?.time   || "11:00";
+  const openTime    = openParsed?.time    || "8:00";
+  const openPeriod  = openParsed?.period  || "AM";
+  const closeTime   = closeParsed?.time   || "11:00";
   const closePeriod = closeParsed?.period || "PM";
 
-  // Toggling ON always sets 00:00/23:59 automatically — no manual input needed
   const toggle24Hours = (checked: boolean) => {
     if (checked) {
       onOpeningChange("00:00");
       onClosingChange("23:59");
     } else {
-      // Restore a sensible default so the selects have a valid starting value
       onOpeningChange("8:00 AM");
       onClosingChange("11:00 PM");
     }
   };
 
-  const handleOpenTimeChange   = (time: string)            => onOpeningChange(formatToStorageTime(time, openPeriod));
-  const handleOpenPeriodChange = (period: "AM" | "PM")     => onOpeningChange(formatToStorageTime(openTime, period));
-  const handleCloseTimeChange  = (time: string)            => onClosingChange(formatToStorageTime(time, closePeriod));
-  const handleClosePeriodChange = (period: "AM" | "PM")    => onClosingChange(formatToStorageTime(closeTime, period));
+  const handleOpenTimeChange    = (time: string)        => onOpeningChange(formatToStorageTime(time, openPeriod));
+  const handleOpenPeriodChange  = (period: "AM" | "PM") => onOpeningChange(formatToStorageTime(openTime, period));
+  const handleCloseTimeChange   = (time: string)        => onClosingChange(formatToStorageTime(time, closePeriod));
+  const handleClosePeriodChange = (period: "AM" | "PM") => onClosingChange(formatToStorageTime(closeTime, period));
 
   return (
     <div className="space-y-6">
 
-      {/* Operating Days */}
-      <div className="space-y-4">
-        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Operating Days</Label>
-        <div className="flex flex-wrap gap-2">
-          {(Object.keys(workingDays) as (keyof WorkingDays)[]).map((day) => (
-            <button
-              key={day}
-              type="button"
-              onClick={() => onDaysChange({ ...workingDays, [day]: !workingDays[day] })}
-              className={`px-4 py-2 rounded-xl border text-[10px] font-black uppercase transition-all ${
-                workingDays[day]
-                  ? "text-white border-transparent shadow-md"
-                  : "bg-white text-slate-400 border-slate-100 hover:bg-slate-50"
-              }`}
-              style={workingDays[day] ? { backgroundColor: accentColor } : {}}
-            >
-              {day}
-            </button>
-          ))}
+      {/* Operating Days — hidden for single-date events via hideDays prop */}
+      {!hideDays && (
+        <div className="space-y-4">
+          <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Operating Days</Label>
+          <div className="flex flex-wrap gap-2">
+            {(Object.keys(workingDays) as (keyof WorkingDays)[]).map((day) => (
+              <button
+                key={day}
+                type="button"
+                onClick={() => onDaysChange({ ...workingDays, [day]: !workingDays[day] })}
+                className={`px-4 py-2 rounded-xl border text-[10px] font-black uppercase transition-all ${
+                  workingDays[day]
+                    ? "text-white border-transparent shadow-md"
+                    : "bg-white text-slate-400 border-slate-100 hover:bg-slate-50"
+                }`}
+                style={workingDays[day] ? { backgroundColor: accentColor } : {}}
+              >
+                {day}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* 24-Hour Toggle */}
-      <div
-        className="flex items-center justify-between p-4 rounded-2xl border-2 transition-all"
-        style={is24Hours ? { borderColor: accentColor, backgroundColor: `${accentColor}08` } : {}}
-      >
-        <div>
-          <Label
-            className="text-[10px] font-black uppercase tracking-widest"
-            style={{ color: is24Hours ? accentColor : undefined }}
-          >
-            Open 24 Hours
-          </Label>
-          <p className="text-[10px] text-slate-400 mt-0.5">
-            {is24Hours
-              ? "Hours automatically set to 12:00 AM – 11:59 PM"
-              : "Toggle on if this place never closes"}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          {is24Hours && (
-            <span
-              className="text-[10px] font-black px-2 py-1 rounded-lg"
-              style={{ color: accentColor, backgroundColor: `${accentColor}15` }}
+      {/* 24-Hour Toggle — hidden on creation pages via hide24HourToggle prop */}
+      {!hide24HourToggle && (
+        <div
+          className="flex items-center justify-between p-4 rounded-2xl border-2 transition-all"
+          style={is24Hours ? { borderColor: accentColor, backgroundColor: `${accentColor}08` } : {}}
+        >
+          <div>
+            <Label
+              className="text-[10px] font-black uppercase tracking-widest"
+              style={{ color: is24Hours ? accentColor : undefined }}
             >
-              24 / 7
-            </span>
-          )}
-          <Switch
-            checked={is24Hours}
-            onCheckedChange={toggle24Hours}
-          />
+              Open 24 Hours
+            </Label>
+            <p className="text-[10px] text-slate-400 mt-0.5">
+              {is24Hours
+                ? "Hours automatically set to 12:00 AM – 11:59 PM"
+                : "Toggle on if this place never closes"}
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            {is24Hours && (
+              <span
+                className="text-[10px] font-black px-2 py-1 rounded-lg"
+                style={{ color: accentColor, backgroundColor: `${accentColor}15` }}
+              >
+                24 / 7
+              </span>
+            )}
+            <Switch checked={is24Hours} onCheckedChange={toggle24Hours} />
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Time Selectors — hidden when 24h is active */}
-      {!is24Hours && (
+      {/* Time Selectors — always visible when hide24HourToggle=true, otherwise hidden when 24h is active */}
+      {(hide24HourToggle || !is24Hours) && (
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Opening Time</Label>
