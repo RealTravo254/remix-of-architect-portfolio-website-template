@@ -1,0 +1,14 @@
+declare module 'react-i18next';
+declare module 'i18next';
+declare module 'i18next-browser-languagedetector';
+declare module 'mapbox-gl';
+declare module 'qrcode.react';
+declare module 'leaflet';
+declare module 'leaflet/dist/images/marker-icon-2x.png';
+declare module 'leaflet/dist/images/marker-icon.png';
+declare module 'leaflet/dist/images/marker-shadow.png';
+declare module 'jspdf';
+declare module 'jspdf-autotable';
+declare module 'embla-carousel-autoplay';
+declare module '@yudiel/react-qr-scanner';
+declare module 'vite-plugin-pwa';
