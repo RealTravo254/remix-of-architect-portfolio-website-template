@@ -488,9 +488,8 @@ z
                    icon={<Copy className="h-5 w-5" />} 
                    label="Copy" 
                    onClick={async () => {
-                     toast({ title: "Copying link..." });
-                     const refLink = await generateReferralLink(id!, "hotel", id!);
-                     await navigator.clipboard.writeText(refLink);
+                     const link = getShareLink(id!, "hotel", hotel.name, hotel.location);
+                     await navigator.clipboard.writeText(link);
                      toast({ title: "Link Copied!" });
                    }} 
                 />
@@ -498,12 +497,11 @@ z
                    icon={<Share2 className="h-5 w-5" />} 
                    label="Share" 
                    onClick={async () => {
-                     toast({ title: "Preparing share..." });
-                     const refLink = await generateReferralLink(id!, "hotel", id!);
+                     const link = getShareLink(id!, "hotel", hotel.name, hotel.location);
                      if (navigator.share) {
-                       try { await navigator.share({ title: hotel.name, url: refLink }); } catch (e) {}
+                       try { await navigator.share({ title: hotel.name, url: link }); } catch (e) {}
                      } else {
-                       await navigator.clipboard.writeText(refLink);
+                       await navigator.clipboard.writeText(link);
                        toast({ title: "Link Copied!" });
                      }
                    }} 
