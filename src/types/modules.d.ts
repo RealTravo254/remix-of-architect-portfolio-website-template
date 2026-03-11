@@ -28,12 +28,14 @@ declare module 'i18next-browser-languagedetector' {
   export default LanguageDetector;
 }
 declare module 'mapbox-gl' {
-  export class Map { constructor(options: any); remove(): void; on(event: string, handler: any): void; resize(): void; fitBounds(bounds: any, options?: any): void; }
-  export class Marker { constructor(options?: any); setLngLat(lnglat: any): Marker; addTo(map: Map): Marker; remove(): void; getElement(): HTMLElement; }
-  export class LngLatBounds { constructor(); extend(lnglat: any): LngLatBounds; }
-  export let accessToken: string;
-  const mapboxgl: any;
-  export default mapboxgl;
+  namespace mapboxgl {
+    class Map { constructor(options: any); remove(): void; on(event: string, handler: any): void; resize(): void; fitBounds(bounds: any, options?: any): void; }
+    class Marker { constructor(options?: any); setLngLat(lnglat: any): Marker; addTo(map: Map): Marker; remove(): void; getElement(): HTMLElement; }
+    class LngLatBounds { constructor(); extend(lnglat: any): LngLatBounds; }
+    let accessToken: string;
+  }
+  export = mapboxgl;
+  export as namespace mapboxgl;
 }
 declare module 'qrcode.react' {
   import { ForwardRefExoticComponent, RefAttributes } from 'react';
