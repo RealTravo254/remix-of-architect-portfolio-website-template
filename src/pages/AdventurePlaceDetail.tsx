@@ -351,25 +351,7 @@ const AdventurePlaceDetail = () => {
 
             {/* Operating hours moved into mobile booking card below */}
 
-            <GeneralFacilitiesDisplay facilityIds={
-              Array.isArray(place.amenities)
-                ? place.amenities.map((a: any) => typeof a === "string" ? a : a.name || "")
-                : []
-            } />
-
-            {place.facilities?.length > 0 && (
-              <div id="facilities-section">
-                <FacilitiesGrid facilities={place.facilities} itemId={resolvedId} itemType="adventure_place" accentColor="#008080" />
-              </div>
-            )}
-
-            {place.activities?.length > 0 && (
-              <div id="activities-section">
-                <ActivitiesGrid activities={place.activities} itemId={resolvedId} itemType="adventure_place" accentColor="#FF7F50" />
-              </div>
-            )}
-
-            {/* Mobile booking card */}
+            {/* Mobile booking card - above amenities/activities */}
             <div className="bg-white rounded-[32px] p-6 shadow-xl border border-slate-100 lg:hidden">
               <div className="flex justify-between items-start mb-6">
                 <div>
