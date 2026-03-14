@@ -50,6 +50,12 @@ export const NavigationDrawer = ({ onClose }: NavigationDrawerProps) => {
     fetchUserData();
   }, [user]);
 
+  const handleLanguageChange = (lang: string) => {
+    setLanguage(lang);
+    i18n.changeLanguage(lang);
+    document.documentElement.dir = (lang === "ar" || lang === "he") ? "rtl" : "ltr";
+  };
+
   const handleProtectedNavigation = (path: string) => {
     window.location.href = user ? path : "/auth";
     onClose();
