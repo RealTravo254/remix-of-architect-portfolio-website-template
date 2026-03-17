@@ -135,6 +135,8 @@ const Index = () => {
 
   const [isSearchVisible, setIsSearchVisible] = useState(true);
   const [showSearchIcon, setShowSearchIcon] = useState(false);
+  const [scrolledPastHero, setScrolledPastHero] = useState(false);
+  const [isIndexDrawerOpen, setIsIndexDrawerOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const [scrollableRows, setScrollableRows] = useState<{
     trips: any[]; hotels: any[]; attractions: any[];
