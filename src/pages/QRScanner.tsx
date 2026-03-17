@@ -202,12 +202,26 @@ const QRScanner = () => {
 
   const verifyBookingOnline = async (bookingId: string, email: string, visitDate: string) => {
     const { data: booking, error } = await supabase.from("bookings").select("*").eq("id", bookingId).single();
-    if (error || !booking) return { valid: false, error: "Booking not found" };
-    if (booking.guest_email !== email) return { valid: false, error: "Booking email doesn't match" };
-    if (booking.payment_status !== "completed" && booking.payment_status !== "paid") return { valid: false, error: "Booking is not paid" };
+    if (error || !booking) {
+      console.error("QR verify - booking lookup failed:", error?.message, "bookingId:", bookingId);
+      return { valid: false, error: "Booking not found. Please ensure the guest has a valid booking." };
+    }
+    
+    // Email check - case insensitive
+    if (booking.guest_email?.toLowerCase() !== email?.toLowerCase()) {
+      return { valid: false, error: "Booking email doesn't match" };
+    }
+    
+    if (booking.payment_status !== "completed" && booking.payment_status !== "paid") {
+      return { valid: false, error: "Booking is not paid" };
+    }
 
-    const bookingVisitDate = booking.visit_date ? format(new Date(booking.visit_date), "yyyy-MM-dd") : null;
-    if (bookingVisitDate !== visitDate) return { valid: false, error: `Visit date mismatch` };
+    // Date comparison - normalize both to YYYY-MM-DD strings
+    const bookingVisitDate = booking.visit_date ? booking.visit_date.split('T')[0] : null;
+    const qrVisitDate = visitDate ? visitDate.split('T')[0] : null;
+    if (bookingVisitDate && qrVisitDate && bookingVisitDate !== qrVisitDate) {
+      return { valid: false, error: `Visit date mismatch: booking is for ${bookingVisitDate}` };
+    }
 
     let itemData: { created_by: string | null; name: string } | null = null;
     const bookingType = booking.booking_type;
