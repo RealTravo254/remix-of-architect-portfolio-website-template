@@ -22,21 +22,24 @@ export const PaymentSuccessDialog = ({
 }: PaymentSuccessDialogProps) => {
   const navigate = useNavigate();
 
+  // Extract booking details - handle both verify response format and raw booking data format
+  const details = bookingData?.booking_details || bookingData || {};
+  
   const pdfData: BookingPDFData | null = bookingData ? {
-    bookingId: bookingData.bookingId || reference,
-    guestName: bookingData.guestName || bookingData.guest_name || 'Guest',
-    guestEmail: bookingData.guestEmail || bookingData.guest_email || '',
-    guestPhone: bookingData.guestPhone || bookingData.guest_phone,
-    itemName: bookingData.itemName || bookingData.emailData?.itemName || 'Booking',
-    bookingType: bookingData.bookingType || bookingData.booking_type || 'booking',
-    visitDate: bookingData.visitDate || bookingData.visit_date || new Date().toISOString(),
-    totalAmount: bookingData.amount || bookingData.total_amount || 0,
-    adults: bookingData.adults || bookingData.booking_details?.adults,
-    children: bookingData.children || bookingData.booking_details?.children,
-    slotsBooked: bookingData.slotsBooked || bookingData.slots_booked,
+    bookingId: bookingData.bookingId || bookingData.id || reference,
+    guestName: bookingData.guestName || bookingData.guest_name || details.guest_name || 'Guest',
+    guestEmail: bookingData.guestEmail || bookingData.guest_email || details.guest_email || '',
+    guestPhone: bookingData.guestPhone || bookingData.guest_phone || details.guest_phone,
+    itemName: bookingData.itemName || bookingData.emailData?.itemName || details.item_name || 'Booking',
+    bookingType: bookingData.bookingType || bookingData.booking_type || details.booking_type || 'booking',
+    visitDate: bookingData.visitDate || bookingData.visit_date || details.visit_date || new Date().toISOString(),
+    totalAmount: bookingData.amount || bookingData.total_amount || details.total_amount || 0,
+    adults: bookingData.adults || details.adults || details.num_adults,
+    children: bookingData.children || details.children || details.num_children,
+    slotsBooked: bookingData.slotsBooked || bookingData.slots_booked || details.slots_booked,
     paymentStatus: 'completed',
-    facilities: bookingData.facilities || bookingData.booking_details?.facilities,
-    activities: bookingData.activities || bookingData.booking_details?.activities,
+    facilities: bookingData.facilities || details.facilities || details.selectedFacilities,
+    activities: bookingData.activities || details.activities || details.selectedActivities,
   } : null;
 
   const handleViewBookings = () => {
