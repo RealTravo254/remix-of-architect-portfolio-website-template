@@ -464,7 +464,7 @@ const Index = () => {
                 <NavigationDrawer onClose={() => setIsIndexDrawerOpen(false)} />
               </SheetContent>
             </Sheet>
-            <span className="text-[13px] font-black uppercase tracking-[0.14em] text-white">
+            <span className="font-bold text-lg tracking-tight italic text-white">
               RealTravo
             </span>
           </div>
