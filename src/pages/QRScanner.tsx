@@ -205,18 +205,18 @@ const QRScanner = () => {
 
   const resolveItemData = async (bookingType: string, itemId: string) => {
     if (bookingType === "trip" || bookingType === "event") {
-      const { data } = await supabase.from("trips").select("created_by, name").eq("id", itemId).maybeSingle();
-      return data;
+      const { data } = await supabase.from("trips").select("created_by, name, type, activities, price, price_child, date, location").eq("id", itemId).maybeSingle();
+      return data ? { ...data, category: data.type === 'event' ? 'Event' : 'Trip' } : null;
     }
 
     if (bookingType === "hotel") {
-      const { data } = await supabase.from("hotels").select("created_by, name").eq("id", itemId).maybeSingle();
-      return data;
+      const { data } = await supabase.from("hotels").select("created_by, name, activities, facilities, location, establishment_type").eq("id", itemId).maybeSingle();
+      return data ? { ...data, category: data.establishment_type === 'accommodation_only' ? 'Accommodation' : 'Hotel' } : null;
     }
 
     if (["adventure_place", "adventure", "campsite", "experience"].includes(bookingType)) {
-      const { data } = await supabase.from("adventure_places").select("created_by, name").eq("id", itemId).maybeSingle();
-      return data;
+      const { data } = await supabase.from("adventure_places").select("created_by, name, activities, facilities, entry_fee, location").eq("id", itemId).maybeSingle();
+      return data ? { ...data, category: 'Experience / Attraction' } : null;
     }
 
     return null;
