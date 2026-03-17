@@ -34,6 +34,19 @@ interface BookingData {
   email: string;
 }
 
+interface ItemData {
+  name?: string;
+  category?: string;
+  activities?: any;
+  facilities?: any;
+  location?: string;
+  price?: number;
+  price_child?: number;
+  entry_fee?: number;
+  date?: string;
+  establishment_type?: string;
+}
+
 interface VerifiedBooking {
   id: string;
   guest_name: string;
