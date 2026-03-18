@@ -53,7 +53,6 @@ export const Header = ({ onSearchClick, showSearchIcon = true, className, __from
             </SheetContent>
           </Sheet>
           <Link to="/" className="flex items-center gap-2 group ml-1">
-            <span className="md:hidden text-white font-bold text-lg tracking-tight italic">RealTravo</span>
             <span className="hidden md:inline font-bold text-lg tracking-tight italic" style={{ background: "linear-gradient(to right, #1a365d, #2b6cb0, #4fd1c5)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>RealTravo</span>
           </Link>
         </div>
