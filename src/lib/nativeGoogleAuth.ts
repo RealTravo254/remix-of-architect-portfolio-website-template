@@ -26,7 +26,7 @@ export async function signInWithGoogleNative() {
   }
 
   // Native flow
-  const { GoogleAuth } = await import('@codetrix-studio/capacitor-google-auth');
+  const { GoogleAuth } = await import(/* @vite-ignore */ '@codetrix-studio/capacitor-google-auth');
 
   try {
     // Initialize on first call (safe to call multiple times)
