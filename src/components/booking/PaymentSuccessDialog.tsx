@@ -4,6 +4,7 @@ import { CheckCircle2, ArrowLeft } from "lucide-react";
 import { BookingDownloadButton } from "./BookingDownloadButton";
 import { BookingPDFData } from "@/lib/pdfBookingExport";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { saveBookingLocally } from "@/hooks/useOfflineBookings";
 
 interface PaymentSuccessDialogProps {
@@ -60,7 +61,9 @@ export const PaymentSuccessDialog = ({
       }
     : null;
 
-  if (bookingData && pdfData) {
+  useEffect(() => {
+    if (!bookingData || !pdfData) return;
+
     saveBookingLocally({
       id: bookingData?.bookingId ?? bookingData?.id ?? reference,
       booking_type: bookingData?.bookingType ?? bookingData?.booking_type ?? details?.booking_type ?? 'booking',
@@ -77,7 +80,7 @@ export const PaymentSuccessDialog = ({
       item_id: bookingData?.item_id ?? bookingData?.itemId ?? 'offline-booking',
       item_name: pdfData.itemName,
     });
-  }
+  }, [bookingData, pdfData, reference, details]);
 
   const handleViewBookings = () => {
     onOpenChange(false);
