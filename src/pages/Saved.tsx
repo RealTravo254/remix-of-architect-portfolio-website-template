@@ -211,7 +211,7 @@ const Saved = () => {
           )}
 
           {isLoading ? (
-            <Skeleton className="h-64 w-full rounded-[32px]" />
+            <SavedItemsSkeleton />
           ) : savedListings.length === 0 ? (
             <div className="bg-white rounded-[40px] p-20 text-center text-slate-400 border border-slate-100">
               No items saved yet.
