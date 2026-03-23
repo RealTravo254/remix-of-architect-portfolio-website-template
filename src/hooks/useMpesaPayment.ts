@@ -60,12 +60,55 @@ export const useMpesaPayment = (options: MpesaPaymentOptions = {}) => {
           if (payment.payment_status === 'completed') {
             setPaymentStatus('success');
             
+            // Send payment notification email
+            if (currentBookingData.current) {
+              const bd = currentBookingData.current;
+              try {
+                await supabase.functions.invoke('send-payment-notification', {
+                  body: {
+                    bookingId: payment.booking_data?.booking_id || payment.id,
+                    email: bd.guest_email,
+                    guestName: bd.guest_name,
+                    itemName: bd.emailData?.itemName || 'Your booking',
+                    totalAmount: bd.total_amount,
+                    paymentStatus: 'completed',
+                    paymentMethod: bd.payment_method,
+                    visitDate: bd.visit_date,
+                  }
+                });
+              } catch (emailErr) {
+                console.error('Failed to send payment email:', emailErr);
+              }
+            }
+
             if (options.onSuccess) {
               options.onSuccess(payment.booking_data?.booking_id || payment.id);
             }
           } else if (payment.payment_status === 'failed') {
             setPaymentStatus('failed');
             setErrorMessage(payment.result_desc || 'Payment failed');
+            
+            // Send payment failed email
+            if (currentBookingData.current) {
+              const bd = currentBookingData.current;
+              try {
+                await supabase.functions.invoke('send-payment-notification', {
+                  body: {
+                    bookingId: payment.booking_data?.booking_id || payment.id,
+                    email: bd.guest_email,
+                    guestName: bd.guest_name,
+                    itemName: bd.emailData?.itemName || 'Your booking',
+                    totalAmount: bd.total_amount,
+                    paymentStatus: 'failed',
+                    paymentMethod: bd.payment_method,
+                    visitDate: bd.visit_date,
+                  }
+                });
+              } catch (emailErr) {
+                console.error('Failed to send payment failed email:', emailErr);
+              }
+            }
+
             if (options.onError) {
               options.onError(payment.result_desc || 'Payment failed');
             }
