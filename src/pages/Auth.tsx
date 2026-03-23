@@ -6,7 +6,7 @@ import { SignupForm } from "@/components/auth/SignupForm";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Home, MapPin, Shield, Star } from "lucide-react";
-import brandPaletteImage from "@/assets/brand-palette-card.png";
+
 
 const Auth = () => {
   const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
