@@ -11,6 +11,7 @@ import { BookingDownloadButton } from "@/components/booking/BookingDownloadButto
 import { format, isToday, isYesterday, parseISO } from "date-fns";
 import { useOfflineBookings } from "@/hooks/useOfflineBookings";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { BookingsSkeleton } from "@/components/BookingsSkeleton";
 
 const bookingsCache = { data: null as any[] | null, timestamp: 0 };
 
