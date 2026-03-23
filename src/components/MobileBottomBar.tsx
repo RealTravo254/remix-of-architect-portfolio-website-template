@@ -67,6 +67,7 @@ export const MobileBottomBar = () => {
                     type="button"
                     className="relative flex flex-col items-center justify-center group"
                     aria-label={item.label}
+                    onPointerDown={() => closeAll()}
                   >
                     {NavContent}
                   </button>
@@ -79,6 +80,7 @@ export const MobileBottomBar = () => {
                 key={item.path}
                 to={item.path}
                 className="relative flex flex-col items-center justify-center group"
+                onPointerDown={() => closeAll()}
               >
                 {NavContent}
               </Link>
