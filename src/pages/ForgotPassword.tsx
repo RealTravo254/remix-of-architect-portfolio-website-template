@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 const ForgotPassword = () => {
+  const { user } = useAuth();
   const [step, setStep] = useState<'email' | 'sent' | 'credentials' | 'code'>(user ? 'credentials' : 'email');
   const [email, setEmail] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
@@ -29,7 +30,6 @@ const ForgotPassword = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
 
   useEffect(() => {
     setStep((prev) => {
