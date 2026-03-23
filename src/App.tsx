@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { PageLayout } from "@/components/PageLayout";
+import { OverlayCloseProvider } from "@/components/OverlayCloseContext";
 import { Capacitor } from "@capacitor/core"; 
 
 import { TealLoader } from "@/components/ui/teal-loader";
@@ -161,6 +162,7 @@ const App = () => {
         <BrowserRouter>
           <AuthProvider>
             <CurrencyProvider>
+            <OverlayCloseProvider>
             <PageLayout>
               <Suspense fallback={<SuspenseFallback />}>
                 <div className="w-full">
@@ -233,6 +235,7 @@ const App = () => {
                 </div>
               </Suspense>
             </PageLayout>
+            </OverlayCloseProvider>
             </CurrencyProvider>
           </AuthProvider>
         </BrowserRouter>

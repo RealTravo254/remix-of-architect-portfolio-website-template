@@ -11,6 +11,8 @@ import { BookingDownloadButton } from "@/components/booking/BookingDownloadButto
 import { format, isToday, isYesterday, parseISO } from "date-fns";
 import { useOfflineBookings } from "@/hooks/useOfflineBookings";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { BookingsSkeleton } from "@/components/BookingsSkeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const bookingsCache = { data: null as any[] | null, timestamp: 0 };
 
@@ -113,8 +115,16 @@ const Bookings = () => {
 
   if (authLoading || loading) {
     return (
-      <div className="flex h-[300px] items-center justify-center bg-background">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      <div className="relative flex min-h-full flex-col bg-background">
+        <main className={isEmbeddedInSheet ? "flex-1 px-4 pt-4 pb-20" : "flex-1 container mx-auto px-4 pt-8 pb-32"}>
+          <div className="w-full">
+            <header className="mb-8">
+              <Skeleton className="h-7 w-40 mb-2" />
+              <Skeleton className="h-3 w-48" />
+            </header>
+            <BookingsSkeleton />
+          </div>
+        </main>
       </div>
     );
   }

@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import { Trash2, MapPin, ChevronRight, Loader2, Lock } from "lucide-react";
 import { createDetailPath } from "@/lib/slugUtils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SavedItemsSkeleton } from "@/components/SavedItemsSkeleton";
 import { Button } from "@/components/ui/button";
 import { useSavedItems } from "@/hooks/useSavedItems";
 import { useAuth } from "@/contexts/AuthContext";
@@ -210,7 +211,7 @@ const Saved = () => {
           )}
 
           {isLoading ? (
-            <Skeleton className="h-64 w-full rounded-[32px]" />
+            <SavedItemsSkeleton />
           ) : savedListings.length === 0 ? (
             <div className="bg-white rounded-[40px] p-20 text-center text-slate-400 border border-slate-100">
               No items saved yet.
