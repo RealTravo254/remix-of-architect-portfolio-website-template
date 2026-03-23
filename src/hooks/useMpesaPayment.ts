@@ -38,6 +38,7 @@ export const useMpesaPayment = (options: MpesaPaymentOptions = {}) => {
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [checkoutRequestId, setCheckoutRequestId] = useState<string | null>(null);
+  const currentBookingData = useRef<BookingData | null>(null);
 
   // Subscribe to payments table changes
   useEffect(() => {
