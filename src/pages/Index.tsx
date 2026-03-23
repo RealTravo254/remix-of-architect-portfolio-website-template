@@ -5,7 +5,10 @@ import { useNavigate, Link } from "react-router-dom";
 import { SearchBarWithSuggestions } from "@/components/SearchBarWithSuggestions";
 import { useSearchFocus } from "@/components/PageLayout";
 import { ListingCard } from "@/components/ListingCard";
-import { Calendar, Hotel, Tent, Compass, MapPin, ChevronLeft, ChevronRight, Loader2, Navigation, Home, Heart, Ticket, Trophy, Star } from "lucide-react";
+import { Calendar, Hotel, Tent, Compass, MapPin, ChevronLeft, ChevronRight, Loader2, Navigation, Home, Heart, Ticket, Trophy, Star, Menu } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { NavigationDrawer } from "@/components/NavigationDrawer";
+import { NotificationBell } from "@/components/NotificationBell";
 import {
   AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription,
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -117,6 +120,7 @@ const QUICK_NAV = [
 
 // ─── Main component ──────────────────────────────────────────────────────────
 const Index = () => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
@@ -416,6 +420,17 @@ const Index = () => {
     );
   }, [position, ratings, savedItems, handleSave, bookingStats]);
 
+  // Track scroll for sticky mobile bar
+  const [showMobileTopBar, setShowMobileTopBar] = useState(false);
+  useEffect(() => {
+    const handleScrollEvent = () => {
+      const threshold = 80;
+      setShowMobileTopBar(window.scrollY > threshold);
+    };
+    window.addEventListener('scroll', handleScrollEvent, { passive: true });
+    return () => window.removeEventListener('scroll', handleScrollEvent);
+  }, []);
+
   return (
     <div className="brand-shell min-h-screen bg-background">
       <SEOHead
@@ -428,6 +443,25 @@ const Index = () => {
           "potentialAction": { "@type": "SearchAction", "target": "https://realtravo.com/?q={search_term_string}", "query-input": "required name=search_term_string" }
         }}
       />
+
+      {/* Sticky mobile top bar on scroll */}
+      {showMobileTopBar && !isSearchFocused && (
+        <div className="md:hidden fixed top-0 left-0 right-0 z-[200] bg-background border-b border-border w-full m-0">
+          <div className="flex items-center justify-between px-4 py-2">
+            <Sheet open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+              <SheetTrigger asChild>
+                <button className="h-10 w-10 rounded-xl flex items-center justify-center text-foreground" aria-label="Open Menu">
+                  <Menu className="h-6 w-6 stroke-[2.5]" />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-full sm:w-72 p-0 pb-24 h-screen border-none">
+                <NavigationDrawer onClose={() => setIsDrawerOpen(false)} />
+              </SheetContent>
+            </Sheet>
+            <NotificationBell />
+          </div>
+        </div>
+      )}
 
       {/* ─── Hero ──────────────────────────────────────────────────────────── */}
       {!isSearchFocused && (

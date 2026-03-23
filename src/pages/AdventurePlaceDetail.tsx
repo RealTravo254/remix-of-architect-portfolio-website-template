@@ -21,7 +21,7 @@ import { getShareLink } from "@/lib/shareUtils";
 import { extractIdFromSlug } from "@/lib/slugUtils";
 import { DetailNavBar } from "@/components/detail/DetailNavBar";
 import { ImageGalleryModal } from "@/components/detail/ImageGalleryModal";
-import { QuickNavigationBar } from "@/components/detail/QuickNavigationBar";
+import { DetailPageSkeleton } from "@/components/detail/DetailPageSkeleton";
 import { GeneralFacilitiesDisplay } from "@/components/detail/GeneralFacilitiesDisplay";
 import { DetailMapSection } from "@/components/detail/DetailMapSection";
 import { TealLoader } from "@/components/ui/teal-loader";
@@ -183,7 +183,7 @@ const AdventurePlaceDetail = () => {
     }
   };
 
-  if (loading) return <TealLoader />;
+  if (loading) return <DetailPageSkeleton />;
   if (!place) return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-4">
       <AlertCircle className="h-12 w-12 text-red-400" />
@@ -317,13 +317,7 @@ const AdventurePlaceDetail = () => {
         </div>
       </div>
 
-      <div className="md:hidden container px-4 mt-4 max-w-6xl mx-auto">
-        <QuickNavigationBar
-          hasFacilities={place.facilities?.length > 0}
-          hasActivities={place.activities?.length > 0}
-          hasContact={place.phone_numbers?.length > 0 || !!place.email}
-        />
-      </div>
+      {/* QuickNavigationBar removed on mobile per design */}
 
       <main className="container px-4 mt-6 relative z-30 max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[1.8fr,1fr] gap-4">
