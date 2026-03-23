@@ -4,11 +4,13 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import { AccountSheet } from "@/components/AccountSheet";
+import { useOverlayClose } from "@/components/OverlayCloseContext";
 
 export const MobileBottomBar = () => {
   const location = useLocation();
   const { user } = useAuth();
   const { t } = useTranslation();
+  const { closeAll } = useOverlayClose();
 
   const navItems = [
     { icon: Home, label: t('nav.home'), path: "/" },
