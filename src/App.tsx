@@ -162,6 +162,7 @@ const App = () => {
         <BrowserRouter>
           <AuthProvider>
             <CurrencyProvider>
+            <OverlayCloseProvider>
             <PageLayout>
               <Suspense fallback={<SuspenseFallback />}>
                 <div className="w-full">
