@@ -10,7 +10,7 @@ const About = () => {
       <Header />
     
       <main className="container px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">About TripTrac</h1>
+        <h1 className="text-3xl font-bold mb-8">About RealTravo</h1>
         
         <Card className="p-8 max-w-3xl">
           <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -18,7 +18,7 @@ const About = () => {
           </h2>
           <div className="space-y-4 text-muted-foreground">
             <p>
-              TripTrac is your ultimate companion for discovering and booking amazing travel experiences around the world. 
+              RealTravo is your ultimate companion for discovering and booking amazing travel experiences around the world. 
               We connect adventurous souls with unforgettable trips, events, accommodations, and destinations.
             </p>
             <p>
