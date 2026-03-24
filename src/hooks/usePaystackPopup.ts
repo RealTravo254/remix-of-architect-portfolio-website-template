@@ -77,8 +77,11 @@ export const usePaystackPopup = (options: PaystackPopupOptions = {}) => {
       sessionStorage.setItem('paystack_reference', reference);
       sessionStorage.setItem('paystack_booking_data', JSON.stringify(bookingDataWithReferral));
 
-      // Open Paystack popup
-      const popup = new PaystackPop();
+      // Reuse popup instance to prevent re-initialization
+      if (!popupRef.current) {
+        popupRef.current = new PaystackPop();
+      }
+      const popup = popupRef.current;
       
       popup.resumeTransaction(access_code, {
         onSuccess: async (transaction: any) => {
