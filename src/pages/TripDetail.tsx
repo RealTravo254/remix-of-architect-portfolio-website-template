@@ -331,7 +331,7 @@ const TripDetail = () => {
             </div>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-3 lg:space-y-6">
             <div className="bg-white rounded-[32px] p-8 shadow-2xl border border-slate-100 lg:sticky lg:top-24">
               <div className="flex justify-between items-end mb-8">
                 <div>
