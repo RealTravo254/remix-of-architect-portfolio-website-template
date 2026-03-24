@@ -221,18 +221,18 @@ const handler = async (req: Request): Promise<Response> => {
               ${facilitiesHTML}
               ${activitiesHTML}
 
-              ${isPaid ? `
               <div class="qr-code">
                 <h3>Your Booking QR Code</h3>
                 <p>Show this at the venue for quick check-in:</p>
                 <img src="${qrCodeUrl}" alt="Booking QR Code" width="200" height="200" />
               </div>
-              ` : `
+
+              ${!isPaid ? `
               <div class="detail-box">
                 <h2>Payment Instructions</h2>
-                <p>To confirm your booking, please complete the payment process. You should receive an M-Pesa prompt on your phone.</p>
+                <p>To confirm your booking, please complete the payment process.</p>
               </div>
-              `}
+              ` : ''}
 
               <p>Thank you for choosing us!</p>
             </div>
