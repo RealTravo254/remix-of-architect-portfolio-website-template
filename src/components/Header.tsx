@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Menu, Heart, Ticket, Home, User, LogIn } from "lucide-react"; // Added LogIn
+import { Menu, Heart, Ticket, Home, User, LogIn } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -18,6 +18,13 @@ export interface HeaderProps {
   __fromLayout?: boolean;
 }
 
+// Internal Color Constants to match your Brand exactly
+const COLORS = {
+  TEAL: "#008080",
+  CORAL: "#FF7F50",
+  SLATE_LIGHT: "#F8F9FA",
+};
+
 export const Header = ({ className, __fromLayout }: HeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,29 +37,23 @@ export const Header = ({ className, __fromLayout }: HeaderProps) => {
     return subscribe(() => setIsDrawerOpen(false));
   }, [subscribe]);
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!user) return;
-      // We just check connection here as requested in original logic
-      await supabase.from('profiles').select('name').eq('id', user.id).maybeSingle();
-    };
-    fetchUserProfile();
-  }, [user]);
-
   if (!__fromLayout) return null;
 
-  // --- STYLING CONSTANTS ---
+  // --- STYLING MACROS ---
+  
+  // Big Screen Header: Clean white with subtle brand border
   const desktopHeaderClasses = "md:bg-white md:border-b md:border-slate-100 md:shadow-sm md:py-4";
   
-  // Menu Button Styles (Mobile: transparent/dark, Desktop: White/Black)
+  // Menu Button: Matches the Notification Bell "HeaderIconStyles"
   const menuIconStyles = `
     h-11 w-11 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-90 
     text-white bg-black/20 hover:bg-white/20
     md:text-black md:bg-white md:border md:border-slate-200 md:shadow-sm md:hover:bg-slate-50
   `;
 
+  // Nav Items: Matches the Drawer "NavItem" typography and active Teal state
   const navItemClasses = (path: string) => `
-    flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-200
+    flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300
     text-[10px] font-black uppercase tracking-[0.2em]
     ${location.pathname === path 
       ? 'text-[#008080] bg-[#008080]/5' 
@@ -63,7 +64,7 @@ export const Header = ({ className, __fromLayout }: HeaderProps) => {
     <header className={`fixed top-0 left-0 right-0 z-[100] transition-all flex items-center bg-transparent ${desktopHeaderClasses} ${className || ''}`}>
       <div className="container mx-auto px-4 flex items-center justify-between h-14 md:h-16">
         
-        {/* Left: Menu & Brand */}
+        {/* LEFT: MENU & LOGO */}
         <div className="flex items-center gap-3">
           <Sheet open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
             <SheetTrigger asChild>
@@ -71,20 +72,23 @@ export const Header = ({ className, __fromLayout }: HeaderProps) => {
                 <Menu className="h-6 w-6 stroke-[2.5]" />
               </button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-full sm:w-80 p-0 border-none">
+            <SheetContent side="left" className="w-full sm:w-80 p-0 border-none shadow-2xl">
               <NavigationDrawer onClose={() => setIsDrawerOpen(false)} />
             </SheetContent>
           </Sheet>
           
           <Link to="/" className="flex items-center gap-2 group">
-            <span className="hidden md:inline text-xl font-black uppercase tracking-tighter text-[#008080]">
+            <span 
+              className="hidden md:inline text-xl font-black uppercase tracking-tighter transition-colors"
+              style={{ color: COLORS.TEAL }}
+            >
               RealTravo
             </span>
           </Link>
         </div>
 
-        {/* Center: Navigation (Desktop Only) */}
-        <nav className="hidden lg:flex items-center gap-2 bg-slate-50/50 p-1 rounded-2xl border border-slate-100">
+        {/* CENTER: NAV (Big Screen Only) */}
+        <nav className="hidden lg:flex items-center gap-1 bg-slate-50/80 p-1.5 rounded-2xl border border-slate-100/50">
           <Link to="/" className={navItemClasses('/')}>
             <Home className="h-3.5 w-3.5" /> <span>{t('nav.home')}</span>
           </Link>
@@ -96,18 +100,19 @@ export const Header = ({ className, __fromLayout }: HeaderProps) => {
           </Link>
         </nav>
 
-        {/* Right: Actions */}
+        {/* RIGHT: ACTIONS */}
         <div className="flex items-center gap-2">
-          {/* SOLVED: Removed the wrapping div with headerIconStyles. 
-            The NotificationBell component handles its own button and styles internally.
-          */}
+          {/* NotificationBell handles its own styling internally to match menuIconStyles */}
           <NotificationBell />
 
           <div className="h-8 w-[1px] bg-slate-100 hidden md:block mx-1" />
 
           {user ? (
             <AccountSheet>
-              <button className="hidden md:flex h-11 px-6 rounded-2xl items-center gap-2 transition-all font-black text-[10px] uppercase tracking-[0.2em] text-white bg-[#008080] hover:brightness-110 shadow-md shadow-[#008080]/20">
+              <button 
+                className="hidden md:flex h-11 px-6 rounded-2xl items-center gap-2 transition-all font-black text-[10px] uppercase tracking-[0.2em] text-white shadow-md hover:brightness-110 active:scale-95"
+                style={{ backgroundColor: COLORS.TEAL, boxShadow: `0 4px 12px ${COLORS.TEAL}33` }}
+              >
                 <User className="h-4 w-4" />
                 <span>{t('nav.profile')}</span>
               </button>
@@ -115,7 +120,8 @@ export const Header = ({ className, __fromLayout }: HeaderProps) => {
           ) : (
             <button 
               onClick={() => navigate('/auth')} 
-              className="hidden md:flex h-11 px-6 rounded-2xl items-center gap-2 transition-all font-black text-[10px] uppercase tracking-[0.2em] text-white bg-[#FF7F50] hover:brightness-110 shadow-md shadow-[#FF7F50]/20"
+              className="hidden md:flex h-11 px-6 rounded-2xl items-center gap-2 transition-all font-black text-[10px] uppercase tracking-[0.2em] text-white shadow-md hover:brightness-110 active:scale-95"
+              style={{ backgroundColor: COLORS.CORAL, boxShadow: `0 4px 12px ${COLORS.CORAL}33` }}
             >
               <LogIn className="h-4 w-4" />
               <span>{t('nav.login')}</span>
