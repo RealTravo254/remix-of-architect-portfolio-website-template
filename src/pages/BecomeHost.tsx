@@ -39,34 +39,27 @@ const BecomeHost = () => {
 
     const init = async () => {
       try {
-        // Check profile completion
-        const { data: profileData } = await supabase.from('profiles').select('profile_completed').eq('id', user.id).single();
+        // Run company + verification + profile checks in parallel
+        const [companyResult, verificationResult, profileResult] = await Promise.all([
+          supabase.from("companies").select("verification_status").eq("user_id", user.id).maybeSingle(),
+          supabase.from("host_verifications").select("status").eq("user_id", user.id).maybeSingle(),
+          supabase.from('profiles').select('profile_completed').eq('id', user.id).single(),
+        ]);
+
         if (cancelled) return;
-        if (profileData && !profileData.profile_completed) {
+
+        // Check profile completion
+        if (profileResult.data && !profileResult.data.profile_completed) {
           navigate('/complete-profile');
           return;
         }
 
-        // Check if user is a company
-        const { data: companyData } = await supabase
-          .from("companies")
-          .select("*")
-          .eq("user_id", user.id)
-          .maybeSingle();
-
-        if (cancelled) return;
-
+        const companyData = companyResult.data;
         let localIsCompany = false;
 
         if (companyData) {
-          if (companyData.verification_status === "pending") {
-            navigate("/verification-status");
-            return;
-          }
-          if (companyData.verification_status === "rejected") {
-            navigate("/company-registration");
-            return;
-          }
+          if (companyData.verification_status === "pending") { navigate("/verification-status"); return; }
+          if (companyData.verification_status === "rejected") { navigate("/company-registration"); return; }
           if (companyData.verification_status === "approved") {
             localIsCompany = true;
             setIsCompany(true);
@@ -80,18 +73,7 @@ const BecomeHost = () => {
           const refId = urlParams.get("ref");
           if (refId) trackHostReferral(refId);
 
-          const { data: verification, error: verificationError } = await supabase
-            .from("host_verifications")
-            .select("*")
-            .eq("user_id", user.id)
-            .single();
-
-          if (cancelled) return;
-
-          if (verificationError && verificationError.code !== 'PGRST116') {
-            setLoading(false);
-            return;
-          }
+          const verification = verificationResult.data;
 
           if (!verification && !companyData) {
             setLoading(false);
@@ -104,7 +86,7 @@ const BecomeHost = () => {
           }
         }
 
-        // Fetch content using local variable instead of stale state
+        // Fetch content
         const [trips, hotels, adventures] = await Promise.all([
           supabase.from("trips").select("id,name,type").eq("created_by", user.id),
           localIsCompany ? Promise.resolve({ data: [] }) : supabase.from("hotels").select("id,name").eq("created_by", user.id),
