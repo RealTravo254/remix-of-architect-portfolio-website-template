@@ -43,16 +43,12 @@ export const Header = ({ className, __fromLayout, desktopStatic = false }: Heade
     ? "fixed top-0 left-0 right-0 md:static"
     : "fixed top-0 left-0 right-0";
   
-  // Mobile: solid bg for non-index, transparent for index
-  const mobileHeaderBg = isIndexPage
-    ? "bg-transparent"
-    : "bg-background border-b border-border";
+  // Mobile: always solid bg
+  const mobileHeaderBg = "bg-background border-b border-border";
 
   const menuIconStyles = `
     h-11 w-11 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-90 
-    ${isIndexPage
-      ? 'text-white bg-black/20 hover:bg-white/20'
-      : 'text-foreground hover:bg-muted'}
+    text-foreground hover:bg-muted
     md:text-black md:bg-white md:border md:border-slate-200 md:shadow-sm md:hover:bg-slate-50
   `;
 
@@ -86,7 +82,7 @@ export const Header = ({ className, __fromLayout, desktopStatic = false }: Heade
           <Link to="/" className="flex items-center gap-2 group">
             <span 
               className="text-xl font-black uppercase tracking-tighter transition-colors"
-              style={{ color: isIndexPage ? '#fff' : COLORS.TEAL }}
+              style={{ color: COLORS.TEAL }}
             >
               RealTravo
             </span>
