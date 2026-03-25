@@ -98,7 +98,7 @@ const CompanyBrowse = () => {
         <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-xl hover:bg-primary-light transition-colors active:scale-95">
           <ArrowLeft className="h-5 w-5 text-primary-foreground" />
         </button>
-        <h1 className="text-base font-bold text-primary-foreground">Companies</h1>
+        <h1 className="text-base font-bold text-primary-foreground">Travel Partners</h1>
       </div>
 
       <div className="px-4 pt-4 max-w-5xl mx-auto">
