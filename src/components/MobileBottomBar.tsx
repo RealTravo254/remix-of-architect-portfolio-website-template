@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Home, Ticket, Heart, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
