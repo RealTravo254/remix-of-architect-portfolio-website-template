@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { Plane, Building, Tent, Plus, ArrowLeft, LayoutDashboard, Building2 } from "lucide-react";
+import { Plane, Building, Tent, Plus, ArrowLeft, LayoutDashboard, Building2, Loader2 } from "lucide-react";
 
 const COLORS = {
   TEAL: "#008080",
@@ -122,7 +122,14 @@ const BecomeHost = () => {
     }
   };
 
-  if (loading) return <div className="min-h-screen bg-background" />;
+  if (loading) return (
+    <div className="min-h-[60vh] bg-background flex items-center justify-center">
+      <div className="flex flex-col items-center gap-3 text-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-sm font-semibold text-muted-foreground">Loading your host account...</p>
+      </div>
+    </div>
+  );
 
   // Host type selection screen
   if (!hostType) {

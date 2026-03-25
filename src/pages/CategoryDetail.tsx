@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { Header } from "@/components/Header";
+
 import { SearchBarWithSuggestions } from "@/components/SearchBarWithSuggestions";
 import { useSearchFocus } from "@/components/PageLayout";
 import { ListingCard } from "@/components/ListingCard";
@@ -33,7 +33,7 @@ const CategoryDetail = () => {
   const [userId, setUserId] = useState<string | null>(null);
   
   const { position } = useGeolocation();
-  const [showSearchIcon, setShowSearchIcon] = useState(false);
+  
   const searchRef = useRef<HTMLDivElement>(null);
   const [isSearchFocusedLocal, setIsSearchFocusedLocal] = useState(false);
   const { setSearchFocused } = useSearchFocus();
@@ -64,16 +64,6 @@ const CategoryDetail = () => {
     initializeData();
   }, [category]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (window.innerWidth >= 768) {
-        setShowSearchIcon(currentScrollY > 100);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const loadInitialData = async () => {
     setLoading(true);
@@ -219,12 +209,6 @@ const CategoryDetail = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-10">
-      <Header
-        showSearchIcon={showSearchIcon}
-        onSearchClick={() =>
-          searchRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-        }
-      />
 
       <div ref={searchRef} className={cn("bg-white dark:bg-background border-b z-40", isSearchFocused && "z-[600]")}>
         <div className="container px-4 py-3">
