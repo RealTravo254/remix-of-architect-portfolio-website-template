@@ -49,8 +49,6 @@ const categorizeNotifications = (notifications: Notification[]) => {
 
 export const NotificationBell = ({ forceDark = false }: { forceDark?: boolean }) => {
   const { user } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -61,18 +59,12 @@ export const NotificationBell = ({ forceDark = false }: { forceDark?: boolean })
     return subscribe(() => setIsOpen(false));
   }, [subscribe]);
 
-  const isIndexPage = location.pathname === '/';
-
   const headerIconStyles = `
     h-11 w-11 rounded-2xl flex items-center justify-center transition-all duration-200 
     active:scale-90 relative group overflow-visible
-    ${forceDark 
-      ? 'bg-transparent text-foreground' 
-      : `bg-transparent ${
-          isIndexPage ? 'text-white' : 'text-foreground'
-        } md:text-black md:shadow-sm md:border md:border-slate-200 ${
-          isIndexPage ? 'md:bg-white/90 md:hover:bg-white' : 'md:bg-slate-50 md:hover:bg-slate-100'
-        }`
+    ${forceDark
+      ? 'bg-transparent text-foreground'
+      : 'bg-transparent text-foreground md:text-black md:shadow-sm md:border md:border-slate-200 md:bg-slate-50 md:hover:bg-slate-100'
     }
   `;
 
