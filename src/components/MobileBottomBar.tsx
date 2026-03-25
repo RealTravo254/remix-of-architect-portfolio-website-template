@@ -12,6 +12,11 @@ export const MobileBottomBar = () => {
   const { t } = useTranslation();
   const { closeAll } = useOverlayClose();
 
+  // Close all overlays on route change
+  useEffect(() => {
+    closeAll();
+  }, [location.pathname, closeAll]);
+
   const navItems = [
     { icon: Home, label: t('nav.home'), path: "/" },
     { icon: Ticket, label: t('nav.bookings'), path: "/bookings" },
