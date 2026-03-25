@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Home, Ticket, Heart, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -11,6 +12,11 @@ export const MobileBottomBar = () => {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { closeAll } = useOverlayClose();
+
+  // Close all overlays on route change
+  useEffect(() => {
+    closeAll();
+  }, [location.pathname, closeAll]);
 
   const navItems = [
     { icon: Home, label: t('nav.home'), path: "/" },
