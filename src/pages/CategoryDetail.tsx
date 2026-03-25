@@ -220,7 +220,6 @@ const CategoryDetail = () => {
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-10">
       <Header
-        className="hidden md:flex"
         showSearchIcon={showSearchIcon}
         onSearchClick={() =>
           searchRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
