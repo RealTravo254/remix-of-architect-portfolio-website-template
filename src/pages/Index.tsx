@@ -454,16 +454,6 @@ const Index = () => {
     );
   }, [position, ratings, savedItems, handleSave, bookingStats]);
 
-  // Track scroll for sticky mobile bar
-  const [showMobileTopBar, setShowMobileTopBar] = useState(false);
-  useEffect(() => {
-    const handleScrollEvent = () => {
-      const threshold = 80;
-      setShowMobileTopBar(window.scrollY > threshold);
-    };
-    window.addEventListener('scroll', handleScrollEvent, { passive: true });
-    return () => window.removeEventListener('scroll', handleScrollEvent);
-  }, []);
 
   return (
     <div className="brand-shell min-h-screen bg-background">
