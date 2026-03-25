@@ -48,9 +48,7 @@ export const Header = ({ className, __fromLayout, desktopStatic = false }: Heade
 
   const menuIconStyles = `
     h-11 w-11 rounded-2xl flex items-center justify-center transition-all duration-200 active:scale-90 
-    ${isIndexPage
-      ? 'text-white bg-black/20 hover:bg-white/20'
-      : 'text-foreground hover:bg-muted'}
+    text-foreground hover:bg-muted
     md:text-black md:bg-white md:border md:border-slate-200 md:shadow-sm md:hover:bg-slate-50
   `;
 
