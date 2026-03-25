@@ -82,8 +82,8 @@ export const Header = ({ className, __fromLayout }: HeaderProps) => {
           
           <Link to="/" className="flex items-center gap-2 group">
             <span 
-              className="hidden md:inline text-xl font-black uppercase tracking-tighter transition-colors"
-              style={{ color: COLORS.TEAL }}
+              className="text-xl font-black uppercase tracking-tighter transition-colors"
+              style={{ color: isIndexPage ? '#fff' : COLORS.TEAL }}
             >
               RealTravo
             </span>
