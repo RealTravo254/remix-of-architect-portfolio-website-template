@@ -158,7 +158,7 @@ export const NotificationBell = ({ forceDark = false }: { forceDark?: boolean })
 
   return (
     <div className="relative overflow-visible z-20">
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <Sheet open={isOpen} onOpenChange={setIsOpen} modal={false}>
         <SheetTrigger asChild>
           <button className={headerIconStyles} aria-label="Notifications">
             <Bell className="h-5 w-5 stroke-[2.5px] transition-transform group-hover:rotate-12" />
