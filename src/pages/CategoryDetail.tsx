@@ -209,12 +209,6 @@ const CategoryDetail = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-10">
-      <Header
-        showSearchIcon={showSearchIcon}
-        onSearchClick={() =>
-          searchRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-        }
-      />
 
       <div ref={searchRef} className={cn("bg-white dark:bg-background border-b z-40", isSearchFocused && "z-[600]")}>
         <div className="container px-4 py-3">

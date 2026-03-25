@@ -29,6 +29,7 @@ export const AccountSheet = ({ children }: AccountSheetProps) => {
   const [userName, setUserName] = useState("");
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [hostAccessPath, setHostAccessPath] = useState("/become-host");
   const [isOpen, setIsOpen] = useState(false);
   const { subscribe } = useOverlayClose();
 
@@ -38,6 +39,10 @@ export const AccountSheet = ({ children }: AccountSheetProps) => {
 
   useEffect(() => {
     if (!user) {
+      setUserName("");
+      setUserAvatar(null);
+      setUserRole(null);
+      setHostAccessPath("/become-host");
       setLoading(false);
       return;
     }
@@ -45,20 +50,40 @@ export const AccountSheet = ({ children }: AccountSheetProps) => {
     const fetchUserData = async () => {
       setLoading(true);
       try {
-        const [profileRes, rolesRes] = await Promise.all([
-          supabase.from("profiles").select("name, profile_picture_url").eq("id", user.id).single(),
-          supabase.from("user_roles").select("role").eq("user_id", user.id)
+        const [profileRes, rolesRes, companyRes, verificationRes] = await Promise.all([
+          supabase.from("profiles").select("name, profile_picture_url, profile_completed").eq("id", user.id).single(),
+          supabase.from("user_roles").select("role").eq("user_id", user.id),
+          supabase.from("companies").select("verification_status").eq("user_id", user.id).maybeSingle(),
+          supabase.from("host_verifications").select("status").eq("user_id", user.id).maybeSingle(),
         ]);
-        
-        if (profileRes.data) {
-          setUserName(profileRes.data.name || "User");
-          setUserAvatar(profileRes.data.profile_picture_url || null);
+
+        const profileData = profileRes.data;
+        if (profileData) {
+          setUserName(profileData.name || "User");
+          setUserAvatar(profileData.profile_picture_url || null);
         }
 
         if (rolesRes.data && rolesRes.data.length > 0) {
           const roleList = rolesRes.data.map(r => r.role);
           setUserRole(roleList.includes("admin") ? "admin" : "user");
+        } else {
+          setUserRole(null);
         }
+
+        const companyStatus = companyRes.data?.verification_status;
+        const verificationStatus = verificationRes.data?.status;
+
+        const nextHostAccessPath = !profileData?.profile_completed
+          ? "/complete-profile"
+          : companyStatus === "pending" || verificationStatus === "pending"
+            ? "/verification-status"
+            : companyStatus === "rejected"
+              ? "/company-registration"
+              : verificationStatus === "rejected"
+                ? "/host-verification"
+                : "/become-host";
+
+        setHostAccessPath(nextHostAccessPath);
       } catch (error) {
         console.error("Error fetching user data:", error);
       } finally {
@@ -68,19 +93,9 @@ export const AccountSheet = ({ children }: AccountSheetProps) => {
     fetchUserData();
   }, [user]);
 
-  const handleLogout = async () => {
-    setIsOpen(false);
-    await signOut();
-  };
-
-  const handleNavigate = (path: string) => {
-    setIsOpen(false);
-    navigate(path);
-  };
-
   const menuItems = [
     { section: "Creator Tools", items: [
-      { icon: Briefcase, label: "Become a Host", path: "/become-host", show: true },
+      { icon: Briefcase, label: "Become a Host", path: hostAccessPath, show: true },
       { icon: LayoutDashboard, label: "My Listings", path: "/my-listing", show: true },
       { icon: CalendarCheck, label: "My Host Bookings", path: "/host-bookings", show: true },
     ]},
