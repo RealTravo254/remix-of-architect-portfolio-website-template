@@ -33,7 +33,7 @@ const CategoryDetail = () => {
   const [userId, setUserId] = useState<string | null>(null);
   
   const { position } = useGeolocation();
-  const [showSearchIcon, setShowSearchIcon] = useState(false);
+  
   const searchRef = useRef<HTMLDivElement>(null);
   const [isSearchFocusedLocal, setIsSearchFocusedLocal] = useState(false);
   const { setSearchFocused } = useSearchFocus();
