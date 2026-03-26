@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Menu, Heart, Ticket, Home, User, LogIn } from "lucide-react";
+import { Menu, Heart, Ticket, Home, User, LogIn, Building2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { NavigationDrawer } from "./NavigationDrawer";
@@ -97,8 +97,11 @@ export const Header = ({ className, __fromLayout, desktopStatic = false }: Heade
           <Link to="/bookings" className={navItemClasses('/bookings')}>
             <Ticket className="h-3.5 w-3.5" /> <span>{t('nav.bookings')}</span>
           </Link>
-          <Link to="/saved" className={navItemClasses('/saved')}>
-            <Heart className="h-3.5 w-3.5" /> <span>{t('nav.wishlist')}</span>
+          <Link to="/company" className={navItemClasses('/company')}>
+            <Building2 className="h-3.5 w-3.5" /> <span>Travel Partner</span>
+          </Link>
+          <Link to="/become-host" className={navItemClasses('/become-host')}>
+            <Home className="h-3.5 w-3.5" /> <span>Become a Host</span>
           </Link>
         </nav>
 

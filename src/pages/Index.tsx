@@ -454,7 +454,7 @@ const Index = () => {
 
 
   return (
-    <div className="brand-shell min-h-screen bg-background">
+    <div className="brand-grid-bg min-h-screen">
       <SEOHead
         title="Realtravo - Book Trips, Hotels & Adventures"
         description="Discover and book exciting trips, events, hotels, and adventure experiences. Your gateway to unforgettable travel."

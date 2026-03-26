@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Home, Ticket, Heart, User } from "lucide-react";
+import { Home, Ticket, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -21,7 +21,6 @@ export const MobileBottomBar = () => {
   const navItems = [
     { icon: Home, label: t('nav.home'), path: "/" },
     { icon: Ticket, label: t('nav.bookings'), path: "/bookings" },
-    { icon: Heart, label: t('nav.saved'), path: "/saved" },
     { icon: User, label: t('nav.profile'), path: user ? "/profile" : "/auth", opensSheet: true },
   ];
 
