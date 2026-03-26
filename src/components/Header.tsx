@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Menu, Heart, Ticket, Home, User, LogIn } from "lucide-react";
+import { Menu, Heart, Ticket, Home, User, LogIn, Building2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { NavigationDrawer } from "./NavigationDrawer";

@@ -114,10 +114,12 @@ export const NavigationDrawer = ({ onClose }: NavigationDrawerProps) => {
           )}
         </div>
 
-        {/* Travel Partners */}
+        {/* Quick Links */}
         <div className="px-2">
-          <p className="px-4 pt-2 pb-1 text-[10px] font-black text-primary uppercase tracking-[0.22em]">Travel Partner</p>
-          <div className="brand-panel rounded-xl overflow-hidden mx-2">
+          <p className="px-4 pt-2 pb-1 text-[10px] font-black text-primary uppercase tracking-[0.22em]">Quick Links</p>
+          <div className="brand-panel rounded-xl overflow-hidden mx-2 divide-y divide-border/70">
+            <NavItem icon={Heart} label="Saved" path="/saved" />
+            <NavItem icon={Ticket} label="Bookings" path="/bookings" />
             <NavItem icon={Building2} label="Browse Travel Partners" path="/company" />
           </div>
         </div>
