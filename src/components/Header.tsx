@@ -74,7 +74,7 @@ export const Header = ({ className, __fromLayout, desktopStatic = false }: Heade
                 <Menu className="h-6 w-6 stroke-[2.5]" />
               </button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-full sm:w-80 p-0 border-none shadow-2xl">
+            <SheetContent side="bottom" className="w-full h-[85vh] rounded-t-3xl p-0 border-none shadow-2xl">
               <NavigationDrawer onClose={() => setIsDrawerOpen(false)} />
             </SheetContent>
           </Sheet>
