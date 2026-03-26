@@ -37,37 +37,57 @@ const CompanyBrowse = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
-    fetchCompanies(0, true);
+    fetchCompanies(true);
     // Fetch all names for suggestions
     supabase.from("companies").select("company_name").eq("verification_status", "approved").order("company_name").then(({ data }) => {
       setAllCompanyNames((data || []).map(c => c.company_name));
     });
   }, []);
 
-  const fetchCompanies = async (offset: number, reset = false) => {
+  const fetchCompanies = async (reset = false) => {
     if (reset) setLoading(true);
     else setLoadingMore(true);
 
+    // Fetch all approved companies
     let query = supabase
       .from("companies")
       .select("*")
-      .eq("verification_status", "approved")
-      .order("company_name", { ascending: true })
-      .range(offset, offset + PAGE_SIZE - 1);
+      .eq("verification_status", "approved");
 
     if (search.trim()) {
       query = query.ilike("company_name", `%${search.trim()}%`);
     }
 
-    const { data } = await query;
-    const items = data || [];
+    const { data: companiesData } = await query;
+    const allCompanies = companiesData || [];
 
-    if (reset) {
-      setCompanies(items);
-    } else {
-      setCompanies(prev => [...prev, ...items]);
+    // Fetch trip counts per user
+    const userIds = [...new Set(allCompanies.map(c => c.user_id))];
+    const tripCounts: Record<string, number> = {};
+    
+    if (userIds.length > 0) {
+      const { data: trips } = await supabase
+        .from("trips")
+        .select("created_by")
+        .eq("approval_status", "approved")
+        .eq("is_hidden", false)
+        .in("created_by", userIds);
+      
+      (trips || []).forEach(t => {
+        tripCounts[t.created_by!] = (tripCounts[t.created_by!] || 0) + 1;
+      });
     }
-    setHasMore(items.length === PAGE_SIZE);
+
+    // Sort by trip count descending
+    const sorted = allCompanies.sort((a, b) => (tripCounts[b.user_id] || 0) - (tripCounts[a.user_id] || 0));
+    
+    // Paginate
+    const currentPage = reset ? 0 : page;
+    const start = currentPage * PAGE_SIZE;
+    const paged = sorted.slice(0, start + PAGE_SIZE);
+
+    setCompanies(paged);
+    setHasMore(paged.length < sorted.length);
     setLoading(false);
     setLoadingMore(false);
   };
