@@ -25,9 +25,12 @@ const COLORS = {
 
 export const Header = ({ className, __fromLayout, desktopStatic = false }: HeaderProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { t } = useTranslation();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [showHostPopup, setShowHostPopup] = useState(false);
+  const hostBtnRef = useRef<HTMLButtonElement>(null);
   const { subscribe } = useOverlayClose();
 
   useEffect(() => {
