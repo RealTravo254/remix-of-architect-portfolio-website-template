@@ -97,8 +97,11 @@ export const Header = ({ className, __fromLayout, desktopStatic = false }: Heade
           <Link to="/bookings" className={navItemClasses('/bookings')}>
             <Ticket className="h-3.5 w-3.5" /> <span>{t('nav.bookings')}</span>
           </Link>
-          <Link to="/saved" className={navItemClasses('/saved')}>
-            <Heart className="h-3.5 w-3.5" /> <span>{t('nav.wishlist')}</span>
+          <Link to="/company" className={navItemClasses('/company')}>
+            <Building2 className="h-3.5 w-3.5" /> <span>Travel Partner</span>
+          </Link>
+          <Link to="/become-host" className={navItemClasses('/become-host')}>
+            <Home className="h-3.5 w-3.5" /> <span>Become a Host</span>
           </Link>
         </nav>
 
