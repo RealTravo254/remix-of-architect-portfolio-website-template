@@ -96,7 +96,10 @@ const ListingCardComponent = ({
 
   const subtitle = useMemo(() => {
     if (activities && activities.length > 0) {
-      const names = activities.slice(0, 2).map((a: any) => typeof a === 'string' ? a : a.name).filter(Boolean);
+      const names = activities.slice(0, 2).map((a: any) => {
+        const n = typeof a === 'string' ? a : a.name;
+        return n ? n.charAt(0).toUpperCase() + n.slice(1) : '';
+      }).filter(Boolean);
       return names.join(' • ');
     }
     return null;

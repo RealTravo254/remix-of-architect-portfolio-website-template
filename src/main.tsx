@@ -36,10 +36,10 @@ if ('serviceWorker' in navigator) {
       .then((registration) => {
         console.log('SW registered with scope:', registration.scope);
         
-        // Check for updates every 60 seconds
+        // Check for updates every 30 seconds for faster auto-update
         setInterval(() => {
           registration.update();
-        }, 60 * 1000);
+        }, 30 * 1000);
 
         registration.onupdatefound = () => {
           const installingWorker = registration.installing;
