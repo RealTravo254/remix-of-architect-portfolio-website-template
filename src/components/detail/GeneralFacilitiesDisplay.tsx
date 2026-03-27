@@ -29,19 +29,17 @@ export const GeneralFacilitiesDisplay = ({ facilityIds }: GeneralFacilitiesDispl
   return (
     <section className="bg-background rounded-3xl p-4 md:p-6 shadow-sm border border-border">
       <h2 className="text-[11px] font-black uppercase tracking-widest mb-3 md:mb-4 text-muted-foreground">General Facilities</h2>
-      <div className="grid grid-cols-3 md:grid-cols-3 gap-1.5 md:gap-3">
+      <div className="flex flex-wrap gap-3 md:gap-4">
         {displayedFacilities.map((facility) => {
           if (!facility) return null;
           const Icon = facility.icon;
           return (
             <div
               key={facility.id}
-              className="flex flex-col items-center gap-1 p-1.5 md:p-3 md:flex-row md:gap-3 rounded-lg md:rounded-xl bg-muted/50 border border-border"
+              className="flex flex-col items-center gap-1 w-14 md:w-16"
             >
-              <div className="p-1 md:p-2 rounded-md md:rounded-lg bg-primary/10">
-                <Icon className="h-3 w-3 md:h-4 md:w-4 text-primary" />
-              </div>
-              <span className="text-[8px] md:text-xs font-bold text-foreground text-center md:text-left leading-tight">{facility.label}</span>
+              <Icon className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+              <span className="text-[8px] md:text-[10px] font-medium text-muted-foreground text-center leading-tight">{facility.label}</span>
             </div>
           );
         })}

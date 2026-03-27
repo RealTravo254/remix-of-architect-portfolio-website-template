@@ -77,7 +77,7 @@ export const Header = ({ className, __fromLayout, desktopStatic = false }: Heade
                 <Menu className="h-6 w-6 stroke-[2.5]" />
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="w-full h-[85vh] rounded-t-3xl p-0 border-none shadow-2xl">
+            <SheetContent side="left" className="top-14 md:top-16 h-[calc(100vh-3.5rem)] md:h-[calc(100vh-4rem)] w-[300px] sm:max-w-[300px] p-0 border-none shadow-2xl rounded-none">
               <NavigationDrawer onClose={() => setIsDrawerOpen(false)} />
             </SheetContent>
           </Sheet>
@@ -118,23 +118,26 @@ export const Header = ({ className, __fromLayout, desktopStatic = false }: Heade
               <Home className="h-3.5 w-3.5" /> <span>Become a Host</span>
             </button>
             {showHostPopup && !user && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-card border border-border rounded-2xl shadow-xl p-4 z-[200] animate-in fade-in slide-in-from-top-2 duration-200">
-                <p className="text-xs font-semibold text-foreground mb-3 text-center">Sign in to become a host</p>
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={() => { setShowHostPopup(false); navigate('/auth'); }}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:brightness-110 transition-all"
-                  >
-                    <LogIn className="h-3.5 w-3.5" /> Login
-                  </button>
-                  <button
-                    onClick={() => { setShowHostPopup(false); navigate('/auth?tab=signup'); }}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider border border-border text-foreground hover:bg-muted transition-all"
-                  >
-                    <User className="h-3.5 w-3.5" /> Sign Up
-                  </button>
+              <>
+                <div className="fixed inset-0 z-[199]" onClick={() => setShowHostPopup(false)} />
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-card border border-border rounded-2xl shadow-xl p-4 z-[200] animate-in fade-in slide-in-from-top-2 duration-200">
+                  <p className="text-xs font-semibold text-foreground mb-3 text-center">Sign in to become a host</p>
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() => { setShowHostPopup(false); navigate('/auth'); }}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:brightness-110 transition-all"
+                    >
+                      <LogIn className="h-3.5 w-3.5" /> Login
+                    </button>
+                    <button
+                      onClick={() => { setShowHostPopup(false); navigate('/auth?tab=signup'); }}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider border border-border text-foreground hover:bg-muted transition-all"
+                    >
+                      <User className="h-3.5 w-3.5" /> Sign Up
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </>
             )}
           </div>
         </nav>
