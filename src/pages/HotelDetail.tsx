@@ -308,7 +308,7 @@ const HotelDetail = () => {
                 <div className="col-span-2 grid grid-cols-3 gap-2">
                   {allImages.slice(2, 5).map((img, idx) => (
                     <div key={idx} className="rounded-2xl overflow-hidden relative group">
-                      <img src={img} alt={`${hotel.name} - ${idx + 3}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <img src={img} alt={`${hotel.name} - ${idx + 3}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                     </div>
                   ))}
                 </div>
