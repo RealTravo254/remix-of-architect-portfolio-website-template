@@ -281,7 +281,7 @@ const HotelDetail = () => {
             {allImages.length > 0 ? (
               <>
                 <div className="col-span-2 row-span-2 rounded-3xl overflow-hidden relative group">
-                  <img src={allImages[0]} alt={hotel.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <img src={allImages[0]} alt={hotel.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   <div className="absolute bottom-6 left-6 right-6 z-20 space-y-3">
                     <div className="flex flex-wrap gap-2">
