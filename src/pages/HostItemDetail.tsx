@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { TealLoader } from "@/components/ui/teal-loader";
 import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { MobileBottomBar } from "@/components/MobileBottomBar";
@@ -131,7 +132,7 @@ const HostItemDetail = () => {
     );
   };
 
-  if (loading) return <div className="min-h-screen bg-[#F8F9FA] animate-pulse" />;
+  if (loading) return <TealLoader text="Loading item details..." />;
   if (!item) return null;
 
   return (

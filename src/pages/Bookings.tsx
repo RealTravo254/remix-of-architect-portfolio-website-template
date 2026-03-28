@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useRef } from "react";
+import { TealLoader } from "@/components/ui/teal-loader";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -114,19 +115,7 @@ const Bookings = () => {
   }, [bookings]);
 
   if (authLoading || loading) {
-    return (
-      <div className="relative flex min-h-full flex-col bg-background">
-        <main className={isEmbeddedInSheet ? "flex-1 px-4 pt-4 pb-20" : "flex-1 container mx-auto px-4 pt-8 pb-32"}>
-          <div className="w-full">
-            <header className="mb-8">
-              <Skeleton className="h-7 w-40 mb-2" />
-              <Skeleton className="h-3 w-48" />
-            </header>
-            <BookingsSkeleton />
-          </div>
-        </main>
-      </div>
-    );
+    return <TealLoader text="Loading bookings..." />;
   }
 
   return (

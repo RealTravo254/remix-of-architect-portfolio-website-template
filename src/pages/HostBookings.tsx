@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { TealLoader } from "@/components/ui/teal-loader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Building, Plane, Tent, Bell, ChevronRight, ArrowLeft, Calendar, QrCode, TrendingUp } from "lucide-react";
@@ -50,7 +51,7 @@ const HostBookings = () => {
   };
 
   const total = hostedItems.reduce((s, i) => s + i.paidBookingsCount, 0);
-  if (loading) return <div className="min-h-screen bg-background animate-pulse" />;
+  if (loading) return <TealLoader text="Loading host bookings..." />;
 
   return (
     <div className="min-h-screen bg-background">

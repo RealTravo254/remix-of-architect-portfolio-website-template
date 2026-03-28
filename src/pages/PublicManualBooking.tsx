@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { TealLoader } from "@/components/ui/teal-loader";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -468,11 +469,7 @@ const PublicManualBooking = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-[#008080]" />
-      </div>
-    );
+    return <TealLoader text="Loading booking form..." />;
   }
 
   if (submitted) {

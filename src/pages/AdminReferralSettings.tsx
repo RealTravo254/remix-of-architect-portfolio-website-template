@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { TealLoader } from "@/components/ui/teal-loader";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { MobileBottomBar } from "@/components/MobileBottomBar";
@@ -159,15 +160,7 @@ export default function AdminReferralSettings() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-[#F8F9FA]">
-        <Header />
-        <main className="container mx-auto px-4 py-8">
-          <Skeleton className="h-12 w-64 rounded-2xl mb-8" />
-          <Skeleton className="h-[600px] w-full max-w-4xl mx-auto rounded-[28px]" />
-        </main>
-      </div>
-    );
+    return <TealLoader text="Loading settings..." />;
   }
 
   if (!isAdmin) return null;

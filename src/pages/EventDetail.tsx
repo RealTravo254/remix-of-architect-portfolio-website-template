@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { TealLoader } from "@/components/ui/teal-loader";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSafeBack } from "@/hooks/useSafeBack";
 import { MobileBottomBar } from "@/components/MobileBottomBar";
@@ -162,7 +163,7 @@ const EventDetail = () => {
 
   const { remainingSlots, isSoldOut } = useRealtimeItemAvailability(id || undefined, event?.available_tickets || 0);
 
-  if (loading) return <DetailPageSkeleton />;
+  if (loading) return <TealLoader text="Loading event details..." />;
   if (!event) return null;
 
   const today = new Date();
