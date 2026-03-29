@@ -1,16 +1,12 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { Bell, ChevronRight } from "lucide-react";
+import { Bell, Clock, ChevronRight } from "lucide-react";
 import {
   Sheet,
   SheetContent,
+  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -30,7 +26,10 @@ interface Notification {
   created_at: string;
 }
 
-const COLORS = { RED: "#FF0000" };
+const COLORS = {
+  RED: "#FF0000",
+};
+
 const NOTIFICATION_SOUND_URL = "/audio/notification.mp3";
 
 const categorizeNotifications = (notifications: Notification[]) => {
@@ -41,113 +40,12 @@ const categorizeNotifications = (notifications: Notification[]) => {
     if (isToday(date)) category = 'Today';
     else if (isYesterday(date)) category = 'Yesterday';
     else category = format(date, 'MMMM dd, yyyy');
+
     if (!groups[category]) groups[category] = [];
     groups[category].push(notification);
   });
   return Object.keys(groups).map(title => ({ title, notifications: groups[title] }));
 };
-
-// The inner panel content — shared between mobile Sheet and desktop Popover
-const NotificationPanel = ({
-  notifications,
-  categorizedNotifications,
-  unreadCount,
-  getNotificationDeepLink,
-  handleNotificationClick,
-  markAllAsRead,
-  onClose,
-}: {
-  notifications: Notification[];
-  categorizedNotifications: { title: string; notifications: Notification[] }[];
-  unreadCount: number;
-  getNotificationDeepLink: (n: Notification) => string | null;
-  handleNotificationClick: (n: Notification) => void;
-  markAllAsRead: () => void;
-  onClose: () => void;
-}) => (
-  <div className="flex flex-col h-full">
-    {/* Header */}
-    <div className="px-5 py-4 border-b border-border/80 flex items-center justify-between flex-shrink-0 bg-primary text-primary-foreground">
-      <div className="flex flex-col">
-        <p className="text-[10px] font-black uppercase tracking-[0.22em] opacity-80">Notifications</p>
-        <p className="text-xl font-black uppercase tracking-tighter text-white">Inbox</p>
-      </div>
-      <div className="flex items-center gap-3">
-        {unreadCount > 0 && (
-          <button
-            onClick={markAllAsRead}
-            className="text-[10px] font-black uppercase tracking-widest bg-white/10 hover:bg-white/20 py-1 px-3 rounded-lg transition-colors"
-          >
-            Clear All
-          </button>
-        )}
-        <button onClick={onClose} className="text-xs font-bold hover:opacity-70 transition-opacity">
-          Cancel
-        </button>
-      </div>
-    </div>
-
-    {/* Body */}
-    <ScrollArea className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-      <div className="p-4 space-y-6">
-        {notifications.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="brand-panel p-6 rounded-[28px] mb-4">
-              <Bell className="h-10 w-10 text-muted-foreground/20" />
-            </div>
-            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-muted-foreground">All caught up!</p>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {categorizedNotifications.map(group => (
-              <div key={group.title} className="space-y-2">
-                <p className="px-2 text-[10px] font-black text-primary uppercase tracking-[0.22em]">
-                  {group.title}
-                </p>
-                <div className="brand-panel rounded-xl overflow-hidden divide-y divide-border/70 shadow-sm border border-border/40">
-                  {group.notifications.map((notification) => {
-                    const hasDeepLink = !!getNotificationDeepLink(notification);
-                    return (
-                      <button
-                        key={notification.id}
-                        onClick={() => handleNotificationClick(notification)}
-                        className={`w-full flex items-center justify-between px-4 py-4 hover:bg-accent/5 transition-all active:scale-[0.98] group relative ${
-                          !notification.is_read ? "bg-primary/[0.03]" : "bg-card"
-                        }`}
-                      >
-                        <div className="flex items-start gap-3 flex-1 min-w-0">
-                          {!notification.is_read && (
-                            <div className="mt-1.5 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
-                          )}
-                          <div className="space-y-0.5 text-left flex-1 min-w-0">
-                            <h4 className={`text-sm font-bold truncate ${notification.is_read ? 'text-foreground/70' : 'text-foreground'}`}>
-                              {notification.title}
-                            </h4>
-                            <p className="text-xs text-muted-foreground line-clamp-2 leading-snug">
-                              {notification.message}
-                            </p>
-                            <p className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-tighter pt-1">
-                              {format(new Date(notification.created_at), 'h:mm a')}
-                            </p>
-                          </div>
-                        </div>
-                        {hasDeepLink && (
-                          <div className="brand-icon-wrap p-1.5 rounded-lg group-hover:scale-110 transition-transform bg-accent/5 ml-4">
-                            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </ScrollArea>
-  </div>
-);
 
 export const NotificationBell = ({ forceDark = false }: { forceDark?: boolean }) => {
   const { user } = useAuth();
@@ -158,9 +56,11 @@ export const NotificationBell = ({ forceDark = false }: { forceDark?: boolean })
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { subscribe } = useOverlayClose();
 
-  useEffect(() => { return subscribe(() => setIsOpen(false)); }, [subscribe]);
+  useEffect(() => {
+    return subscribe(() => setIsOpen(false));
+  }, [subscribe]);
 
-  const triggerStyles = `
+  const headerIconStyles = `
     h-11 w-11 rounded-2xl flex items-center justify-center transition-all duration-200 
     active:scale-90 relative group overflow-visible
     ${forceDark
@@ -193,7 +93,10 @@ export const NotificationBell = ({ forceDark = false }: { forceDark?: boolean })
   const handleNotificationClick = useCallback((notification: Notification) => {
     markAsRead(notification.id);
     const deepLink = getNotificationDeepLink(notification);
-    if (deepLink) { setIsOpen(false); navigate(deepLink); }
+    if (deepLink) {
+      setIsOpen(false);
+      navigate(deepLink);
+    }
   }, [getNotificationDeepLink, navigate]);
 
   useEffect(() => {
@@ -203,14 +106,20 @@ export const NotificationBell = ({ forceDark = false }: { forceDark?: boolean })
   }, []);
 
   const playNotificationSound = useCallback(() => {
-    if (audioRef.current) { audioRef.current.currentTime = 0; audioRef.current.play().catch(console.error); }
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(console.error);
+    }
   }, []);
 
   const fetchNotifications = async () => {
     if (!user) return;
     const { data, error } = await supabase
-      .from('notifications').select('*').eq('user_id', user.id)
-      .order('created_at', { ascending: false }).limit(20);
+      .from('notifications')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(20);
     if (!error) {
       setNotifications(data || []);
       setUnreadCount(data?.filter(n => !n.is_read).length || 0);
@@ -221,97 +130,138 @@ export const NotificationBell = ({ forceDark = false }: { forceDark?: boolean })
     if (!user) return;
     fetchNotifications();
     const channel = supabase.channel('notifications-changes')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${user.id}` },
-        () => { playNotificationSound(); fetchNotifications(); })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${user.id}` }, 
+        (payload) => {
+          playNotificationSound();
+          fetchNotifications();
+        }
+      )
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'notifications', filter: `user_id=eq.${user.id}` }, fetchNotifications)
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [user, playNotificationSound]);
 
-  const markAsRead = async (id: string) => {
-    await supabase.from('notifications').update({ is_read: true }).eq('id', id);
+  const markAsRead = async (notificationId: string) => {
+    await supabase.from('notifications').update({ is_read: true }).eq('id', notificationId);
     fetchNotifications();
   };
 
   const markAllAsRead = async () => {
     if (!user) return;
     const { error } = await supabase.from('notifications').update({ is_read: true }).eq('user_id', user.id).eq('is_read', false);
-    if (!error) { fetchNotifications(); toast({ title: "CLEARED!", description: "All notifications marked as read." }); }
+    if (!error) {
+      fetchNotifications();
+      toast({ title: "CLEARED!", description: "All notifications marked as read." });
+    }
   };
 
   const categorizedNotifications = useMemo(() => categorizeNotifications(notifications), [notifications]);
 
-  const triggerButton = (
-    <>
-      <Bell className="h-5 w-5 stroke-[2.5px] transition-transform group-hover:rotate-12" />
-      {unreadCount > 0 && (
-        <Badge
-          className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 flex items-center justify-center border-2 border-white text-[10px] font-black z-[50]"
-          style={{ backgroundColor: COLORS.RED, boxShadow: '0 2px 4px rgba(0,0,0,0.2)', pointerEvents: 'none' }}
-        >
-          {unreadCount > 99 ? '99+' : unreadCount}
-        </Badge>
-      )}
-    </>
-  );
-
-  const panelProps = {
-    notifications,
-    categorizedNotifications,
-    unreadCount,
-    getNotificationDeepLink,
-    handleNotificationClick,
-    markAllAsRead,
-    onClose: () => setIsOpen(false),
-  };
-
   return (
     <div className="relative overflow-visible z-20">
-      {/* ── DESKTOP: Popover anchored directly to the bell icon ── */}
-      <div className="hidden md:block">
-        <Popover open={isOpen} onOpenChange={setIsOpen}>
-          <PopoverTrigger asChild>
-            <button className={triggerStyles} aria-label="Notifications">
-              {triggerButton}
-            </button>
-          </PopoverTrigger>
-          {/*
-            align="end"   → right edge of popover aligns with right edge of trigger icon ✓
-            sideOffset={8} → 8px gap below the icon ✓
-            No side="right" needed — Popover drops DOWN from the icon, not from screen edge ✓
-          */}
-          <PopoverContent
-            align="end"
-            sideOffset={8}
-            className="w-[360px] p-0 rounded-2xl overflow-hidden border border-border/40 shadow-2xl"
-            style={{ maxHeight: 'calc(100dvh - 5rem)', display: 'flex', flexDirection: 'column' }}
+      <Sheet open={isOpen} onOpenChange={setIsOpen} modal={false}>
+        <SheetTrigger asChild>
+          <button className={headerIconStyles} aria-label="Notifications">
+            <Bell className="h-5 w-5 stroke-[2.5px] transition-transform group-hover:rotate-12" />
+            {unreadCount > 0 && (
+              <Badge
+                className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 flex items-center justify-center border-2 border-white text-[10px] font-black z-[50]"
+                style={{ backgroundColor: COLORS.RED, boxShadow: '0 2px 4px rgba(0,0,0,0.2)', pointerEvents: 'none' }}
+              >
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </Badge>
+            )}
+          </button>
+        </SheetTrigger>
+        
+        <SheetContent side="right" className="brand-shell top-14 md:top-16 h-[calc(100vh-3.5rem)] md:h-[calc(100vh-4rem)] w-[320px] sm:max-w-[320px] rounded-none p-0 flex flex-col border-none bg-background [&>button]:hidden">
+          {/* Header with safe area */}
+          <div className="px-5 pb-4 border-b border-border/80 flex items-center justify-between flex-shrink-0 bg-primary text-primary-foreground"
+            style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1.25rem)' }}
           >
-            <NotificationPanel {...panelProps} />
-          </PopoverContent>
-        </Popover>
-      </div>
+            <div className="flex flex-col">
+                <p className="text-[10px] font-black uppercase tracking-[0.22em] opacity-80">Notifications</p>
+                <SheetTitle className="text-xl font-black uppercase tracking-tighter text-white">Inbox</SheetTitle>
+            </div>
+            <div className="flex items-center gap-3">
+               {unreadCount > 0 && (
+                  <button 
+                    onClick={markAllAsRead}
+                    className="text-[10px] font-black uppercase tracking-widest bg-white/10 hover:bg-white/20 py-1 px-3 rounded-lg transition-colors"
+                  >
+                    Clear All
+                  </button>
+                )}
+                <button onClick={() => setIsOpen(false)} className="text-xs font-bold hover:opacity-70 transition-opacity">
+                  Cancel
+                </button>
+            </div>
+          </div>
 
-      {/* ── MOBILE: Full-height Sheet from bottom/right ── */}
-      <div className="md:hidden">
-        <Sheet open={isOpen} onOpenChange={setIsOpen} modal={false}>
-          <SheetTrigger asChild>
-            <button className={triggerStyles} aria-label="Notifications">
-              {triggerButton}
-            </button>
-          </SheetTrigger>
-          <SheetContent
-            side="right"
-            style={{
-              top: 'calc(3.5rem + env(safe-area-inset-top, 0px))',
-              height: 'calc(100dvh - 3.5rem - env(safe-area-inset-top, 0px))',
-            }}
-            className="brand-shell z-[90] w-[320px] sm:max-w-[320px] rounded-none p-0 flex flex-col border-none bg-background [&>button]:hidden"
-          >
-            <SheetTitle className="sr-only">Notifications</SheetTitle>
-            <NotificationPanel {...panelProps} />
-          </SheetContent>
-        </Sheet>
-      </div>
+          <ScrollArea className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="p-4 space-y-6">
+              {notifications.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                  <div className="brand-panel p-6 rounded-[28px] mb-4">
+                    <Bell className="h-10 w-10 text-muted-foreground/20" />
+                  </div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-muted-foreground">All caught up!</p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {categorizedNotifications.map(group => (
+                    <div key={group.title} className="space-y-2">
+                      <p className="px-2 text-[10px] font-black text-primary uppercase tracking-[0.22em]">
+                        {group.title}
+                      </p>
+                      
+                      <div className="brand-panel rounded-xl overflow-hidden divide-y divide-border/70 shadow-sm border border-border/40">
+                        {group.notifications.map((notification) => {
+                          const hasDeepLink = !!getNotificationDeepLink(notification);
+                          return (
+                            <button
+                              key={notification.id}
+                              onClick={() => handleNotificationClick(notification)}
+                              className={`w-full flex items-center justify-between px-4 py-4 hover:bg-accent/5 transition-all active:scale-[0.98] group relative ${
+                                !notification.is_read ? "bg-primary/[0.03]" : "bg-card"
+                              }`}
+                            >
+                              <div className="flex items-start gap-3 flex-1 min-w-0">
+                                {!notification.is_read && (
+                                    <div className="mt-1.5 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
+                                )}
+                                <div className="space-y-0.5 text-left flex-1 min-w-0">
+                                  <h4 className={`text-sm font-bold truncate ${notification.is_read ? 'text-foreground/70' : 'text-foreground'}`}>
+                                    {notification.title}
+                                  </h4>
+                                  <p className="text-xs text-muted-foreground line-clamp-2 leading-snug">
+                                    {notification.message}
+                                  </p>
+                                  <p className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-tighter pt-1">
+                                    {format(new Date(notification.created_at), 'h:mm a')}
+                                  </p>
+                                </div>
+                              </div>
+                              
+                              <div className="flex items-center gap-2 ml-4">
+                                {hasDeepLink && (
+                                  <div className="brand-icon-wrap p-1.5 rounded-lg group-hover:scale-110 transition-transform bg-accent/5">
+                                    <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                                  </div>
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
