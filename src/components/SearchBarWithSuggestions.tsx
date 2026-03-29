@@ -382,6 +382,30 @@ export const SearchBarWithSuggestions = React.forwardRef<HTMLDivElement, SearchB
                     </div>
                   )}
 
+                  {/* Place / Location Suggestions */}
+                  {!isSearching && placeSuggestions.length > 0 && (
+                    <div className="mb-2">
+                      <p className="px-5 py-3 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Places & Locations</p>
+                      {placeSuggestions.map((ps) => (
+                        <button
+                          key={ps.key}
+                          onClick={() => handlePlaceSuggestionClick(ps)}
+                          className="w-full p-3 flex items-center gap-3 hover:bg-slate-50 transition-all text-left rounded-[24px]"
+                        >
+                          <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                            <MapPin className="h-4 w-4 text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-bold text-foreground text-sm truncate capitalize">
+                              {[ps.place, ps.location].filter(Boolean).join(', ')}
+                            </h4>
+                            <span className="text-[10px] font-semibold text-muted-foreground uppercase">{ps.country}</span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
                   {/* Results */}
                   {!isSearching && suggestions.length > 0 && (
                     <>
