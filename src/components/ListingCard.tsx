@@ -172,8 +172,8 @@ const ListingCardComponent = ({
           />
         )}
 
-        {/* Category badge — on image, top-left, md+ only */}
-        <div className="hidden md:flex absolute top-2 left-2 z-20">
+        {/* Category badge — on image, top-left */}
+        <div className="flex absolute top-2 left-2 z-20">
           {categoryBadge}
         </div>
 
