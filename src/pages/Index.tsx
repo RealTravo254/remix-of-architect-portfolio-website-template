@@ -380,9 +380,13 @@ const Index = () => {
   // ─── Keep search hero expanded only at the top ───────────────────────────
   useEffect(() => {
     const ctrl = () => {
-      setIsSearchVisible(window.scrollY === 0);
+      if (!searchRef.current) return;
+      const rect = searchRef.current.getBoundingClientRect();
+      // Search is "scrolled away" when its bottom is at or above the header height
+      setIsSearchVisible(rect.bottom > 56);
     };
     window.addEventListener("scroll", ctrl, { passive: true });
+    ctrl();
     return () => window.removeEventListener("scroll", ctrl);
   }, []);
 
