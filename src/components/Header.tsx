@@ -23,7 +23,7 @@ const COLORS = {
   CORAL: "#FF7F50",
 };
 
-export const Header = ({ className, __fromLayout, desktopStatic = false }: HeaderProps) => {
+export const Header = ({ className, __fromLayout, desktopStatic = false, onSearchClick, showSearchIcon = false }: HeaderProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
