@@ -169,6 +169,23 @@ export const SearchBarWithSuggestions = React.forwardRef<HTMLDivElement, SearchB
       }
       combined.sort((a, b) => a.name.localeCompare(b.name));
       setSuggestions(combined.slice(0, 10));
+
+      // Extract unique place/location/country suggestions
+      const placeMap = new Map<string, PlaceSuggestion>();
+      combined.forEach(item => {
+        if (item.place || item.location) {
+          const key = `${(item.place || '').toLowerCase()}-${(item.location || '').toLowerCase()}-${(item.country || '').toLowerCase()}`;
+          if (!placeMap.has(key)) {
+            placeMap.set(key, {
+              place: item.place || '',
+              location: item.location || '',
+              country: item.country || '',
+              key,
+            });
+          }
+        }
+      });
+      setPlaceSuggestions(Array.from(placeMap.values()).slice(0, 5));
     } catch (error) {
       console.error("Error fetching suggestions:", error);
     } finally {
