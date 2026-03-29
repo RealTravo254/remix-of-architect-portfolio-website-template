@@ -320,7 +320,7 @@ const Index = () => {
     const fetchTrips = async () => {
       let dbQuery = supabase.from("trips").select("id,name,location,place,country,image_url,date,is_custom_date,is_flexible_date,available_tickets,activities,type,created_at,price,price_child,description")
         .eq("approval_status", "approved").eq("is_hidden", false).eq("type", "trip");
-      if (query) { const p = `%${query}%`; dbQuery = dbQuery.or(`name.ilike.${p},location.ilike.${p},country.ilike.${p}`); }
+      if (query) { const p = `%${query}%`; dbQuery = dbQuery.or(`name.ilike.${p},location.ilike.${p},place.ilike.${p},country.ilike.${p}`); }
       dbQuery = dbQuery.order('date', { ascending: true }).range(offset, offset + limit - 1);
       const { data } = await dbQuery;
       return (data || []).map((item: any) => ({ ...item, type: "TRIP" }));
