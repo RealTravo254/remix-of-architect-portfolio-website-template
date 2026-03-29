@@ -469,59 +469,63 @@ const Index = () => {
 
       {/* ─── Hero ──────────────────────────────────────────────────────────── */}
       {!isSearchFocused && (
-        <div ref={searchRef} className="relative w-full h-[52vh] md:h-[44vh] overflow-hidden">
-          <div className="absolute inset-0 bg-foreground/80" />
-          <picture>
-            <source srcSet="/images/hero-background.webp" type="image/webp" />
-            <img
-              src="/images/hero-background.webp"
-              alt="Travel destination"
-              fetchPriority="high" decoding="async" loading="eager"
-              width={1920} height={1080}
-              className="absolute inset-0 w-full h-full object-cover opacity-60"
-            />
-          </picture>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--accent)/0.22),transparent_26%),radial-gradient(circle_at_bottom_left,hsl(var(--popup-accent)/0.18),transparent_24%)]" />
+        <div ref={searchRef} className="relative w-full overflow-hidden">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="relative h-[52vh] md:h-[44vh] rounded-b-2xl md:rounded-2xl md:mt-2 overflow-hidden">
+              <div className="absolute inset-0 bg-foreground/80" />
+              <picture>
+                <source srcSet="/images/hero-background.webp" type="image/webp" />
+                <img
+                  src="/images/hero-background.webp"
+                  alt="Travel destination"
+                  fetchPriority="high" decoding="async" loading="eager"
+                  width={1920} height={1080}
+                  className="absolute inset-0 w-full h-full object-cover opacity-60"
+                />
+              </picture>
+              <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--accent)/0.22),transparent_26%),radial-gradient(circle_at_bottom_left,hsl(var(--popup-accent)/0.18),transparent_24%)]" />
 
-          {/* Content - centered text + search */}
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pb-20 md:pb-20 px-4">
-            <div className="container mx-auto px-4 md:px-6">
-              <p className="text-primary-foreground/70 text-xs md:text-sm font-semibold uppercase tracking-widest text-center mb-2">
-                {t('hero.tagline')}
-              </p>
-              <h1 className="text-primary-foreground text-3xl md:text-5xl font-extrabold text-center mb-5 md:mb-7 leading-tight tracking-tight">
-                {t('hero.title')}
-              </h1>
-              <SearchBarWithSuggestions
-                value={searchQuery} onChange={setSearchQuery}
-                onSubmit={() => { if (searchQuery.trim()) { fetchAllData(searchQuery); setIsSearchFocused(true); } }}
-                onSuggestionSearch={q => { setSearchQuery(q); fetchAllData(q); setIsSearchFocused(true); }}
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => {}}
-                onBack={() => { setIsSearchFocused(false); setSearchQuery(""); fetchAllData(); }}
-                showBackButton={false}
-              />
-            </div>
-          </div>
+              {/* Content - centered text + search */}
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pb-20 md:pb-20 px-4">
+                <div className="w-full max-w-4xl mx-auto">
+                  <p className="text-primary-foreground/70 text-xs md:text-sm font-semibold uppercase tracking-widest text-center mb-2">
+                    {t('hero.tagline')}
+                  </p>
+                  <h1 className="text-primary-foreground text-3xl md:text-5xl font-extrabold text-center mb-5 md:mb-7 leading-tight tracking-tight">
+                    {t('hero.title')}
+                  </h1>
+                  <SearchBarWithSuggestions
+                    value={searchQuery} onChange={setSearchQuery}
+                    onSubmit={() => { if (searchQuery.trim()) { fetchAllData(searchQuery); setIsSearchFocused(true); } }}
+                    onSuggestionSearch={q => { setSearchQuery(q); fetchAllData(q); setIsSearchFocused(true); }}
+                    onFocus={() => setIsSearchFocused(true)}
+                    onBlur={() => {}}
+                    onBack={() => { setIsSearchFocused(false); setSearchQuery(""); fetchAllData(); }}
+                    showBackButton={false}
+                  />
+                </div>
+              </div>
 
-          {/* Category pills */}
-          <div className="absolute bottom-3 left-0 right-0 z-10">
-            <div className="container mx-auto px-4 md:px-6">
-              <div className="grid grid-cols-5 gap-2 w-full">
-                {CATEGORIES.map((cat) => (
-                  <button
-                    key={cat.title}
-                    onClick={() => navigate(cat.path)}
-                    className="flex flex-col items-center gap-1.5 py-3 px-2 rounded-2xl border border-white/20 transition-all hover:scale-105 active:scale-95 shadow-lg backdrop-blur-sm"
-                    style={{ backgroundColor: cat.color }}
-                  >
-                    <div className="h-9 w-9 rounded-xl bg-white/20 flex items-center justify-center">
-                      <cat.icon className="h-4 w-4 text-white" />
-                    </div>
-                    <span className="text-[10px] font-bold text-white leading-tight text-center">{cat.title}</span>
-                  </button>
-                ))}
+              {/* Category pills */}
+              <div className="absolute bottom-3 left-0 right-0 z-10">
+                <div className="w-full px-4">
+                  <div className="grid grid-cols-5 gap-2 w-full">
+                    {CATEGORIES.map((cat) => (
+                      <button
+                        key={cat.title}
+                        onClick={() => navigate(cat.path)}
+                        className="flex flex-col items-center gap-1.5 py-3 px-2 rounded-2xl border border-white/20 transition-all hover:scale-105 active:scale-95 shadow-lg backdrop-blur-sm"
+                        style={{ backgroundColor: cat.color }}
+                      >
+                        <div className="h-9 w-9 rounded-xl bg-white/20 flex items-center justify-center">
+                          <cat.icon className="h-4 w-4 text-white" />
+                        </div>
+                        <span className="text-[10px] font-bold text-white leading-tight text-center">{cat.title}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
