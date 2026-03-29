@@ -42,6 +42,13 @@ interface SearchResult {
   matchedActivity?: string;
 }
 
+interface PlaceSuggestion {
+  place: string;
+  location: string;
+  country: string;
+  key: string;
+}
+
 const SEARCH_HISTORY_KEY = "search_history";
 const MAX_HISTORY_ITEMS = 10;
 
