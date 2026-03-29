@@ -144,6 +144,15 @@ export const Header = ({ className, __fromLayout, desktopStatic = false, onSearc
 
         {/* RIGHT: ACTIONS */}
         <div className="flex items-center gap-2">
+          {showSearchIcon && (
+            <button
+              onClick={onSearchClick}
+              className={menuIconStyles}
+              aria-label="Search"
+            >
+              <Search className="h-5 w-5 stroke-[2.5]" />
+            </button>
+          )}
           <NotificationBell />
 
           <div className="h-8 w-[1px] bg-slate-100 hidden md:block mx-1" />
